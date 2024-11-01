@@ -34,12 +34,15 @@ def getNumberName():
 			lines = f.readlines()
 		rowControl = int(lines[0].strip().split()[1])
 
-def changeSetting(row):
+def changeSetting(row=1):
+	global rowControl
+	rowControl += row
+
 	with open(f"setting_{appNumber}.txt", "r") as f:
 		lines = f.readlines()
 	
 	hashtag = "ROW_CONTROL="
-	item = f"ROW_CONTROL= {row}"
+	item = f"ROW_CONTROL= {rowControl}"
 
 	for i, line in enumerate(lines):
 		if hashtag in line:
@@ -97,9 +100,6 @@ fieldName_{ranNumber}.grid(row={rowControl+1},column=0, columnspan=2, padx=7,pad
 
 
 """
-	
-	rowControl += 2
-
 	for i, line in enumerate(lines):
 		if line == hashtag:
 			lines[i-1] = item
@@ -107,7 +107,8 @@ fieldName_{ranNumber}.grid(row={rowControl+1},column=0, columnspan=2, padx=7,pad
 	with open(f"{fieldName}.py", "w") as f:
 		f.writelines(lines)
 		
-	changeSetting(rowControl)
+	changeSetting(2)
+
 
 def field():
 	global rowControl
@@ -124,8 +125,6 @@ fieldName_{ranNumber}.grid(row={rowControl},column=0, columnspan=2, padx=7,pady=
 
 
 """
-	rowControl += 1
-
 	for i, line in enumerate(lines):
 		if line == hashtag:
 			lines[i-1] = item
@@ -133,7 +132,8 @@ fieldName_{ranNumber}.grid(row={rowControl},column=0, columnspan=2, padx=7,pady=
 	with open(f"{fieldName}.py", "w") as f:
 		f.writelines(lines)
 
-	changeSetting(rowControl)
+	changeSetting()
+
 
 def label():
 	global rowControl
@@ -149,8 +149,6 @@ def label():
 
 
 """
-	rowControl += 1
-
 	for i, line in enumerate(lines):
 		if line == hashtag:
 			lines[i-1] = item
@@ -158,7 +156,8 @@ def label():
 	with open(f"{fieldName}.py", "w") as f:
 		f.writelines(lines)
 
-	changeSetting(rowControl)
+	changeSetting()
+
 
 def button():
 	global rowControl
@@ -179,8 +178,6 @@ def button():
 	item2 = f"""Button_{ranNumber} = Button(root, text="button", padx=40, command=btn_{ranNumber}).grid(row={rowControl}, column=0)
 
 """
-	rowControl += 1
-
 	for i, line in enumerate(lines):
 		if line == hashtag1:
 			lines[i-1] = item1
@@ -190,11 +187,48 @@ def button():
 	with open(f"{fieldName}.py", "w") as f:
 		f.writelines(lines)
 
-	changeSetting(rowControl)
+	changeSetting()
 	
 def run():
 	fileName = fieldNameField.get()
-	os.system("start cmd /c python run.py "+fileName+".py")
+	file = f"""import time
+import os
+import subprocess
+import sys
+
+def run_code_from_file(filename):
+    process = subprocess.Popen(['python', filename])
+    return process
+
+def watch_file(filename, interval=1):
+    last_modified = os.path.getmtime(filename)
+    process = run_code_from_file(filename)
+    
+    while True:
+        try:
+            current_modified = os.path.getmtime(filename)
+            if current_modified != last_modified:
+                print("\\n--- Executing Code ---")
+                process.terminate()
+                process = run_code_from_file(filename)
+                last_modified = current_modified
+            time.sleep(interval)
+        except KeyboardInterrupt:
+            print("\\nStop Monitoring.")
+            process.terminate()
+            break
+
+if len(sys.argv) > 1:
+	link = sys.argv[1]
+	watch_file(link)
+else:
+	print("input not found.")
+	"""
+	if(fileName):
+		if not os.path.exists("Run.py"):
+			with open("Run.py", "w") as f:
+				f.write(file)
+		os.system("start cmd /c python Run.py "+fileName+".py")
 
 #Button
 Button_1 = Button(root, text="Create", padx=40, command=create).grid(row=1, column=1)
