@@ -34,9 +34,12 @@ def getNumberName():
 			lines = f.readlines()
 		rowControl = int(lines[0].strip().split()[1])
 
-def changeSetting(row=1):
+def changeSetting(operand, row=1):
 	global rowControl
-	rowControl += row
+	if operand == "sum":
+		rowControl += row
+	elif operand == "sub":
+		rowControl -= row
 
 	with open(f"setting_{appNumber}.txt", "r") as f:
 		lines = f.readlines()
@@ -50,6 +53,15 @@ def changeSetting(row=1):
 	
 	with open(f"setting_{appNumber}.txt", "w") as f:
 		f.writelines(lines)
+
+def removeItem(filename, uniqueCode):
+	with open(filename, "r") as file:
+		lines = file.readlines()
+    
+	newLines = [line for line in lines if uniqueCode not in line]
+    
+	with open(filename, "w") as file:
+		file.writelines(newLines)
 
 
 def create():
@@ -84,20 +96,18 @@ root.mainloop()
 	fieldNameField.insert(0, f"app_{ranNumber}")
 
 
-def fieldLabel():
+def label():
 	global rowControl
 	fieldName = fieldNameField.get()
 	ranNumber = random.randint(100000, 999999)
 	getNumberName()
-
+	
 	with open(f"{fieldName}.py", "r") as f:
 		lines = f.readlines()
 		
 	hashtag = "#Script\n"
-	item = f"""title_{ranNumber} = Label(root, text="new item").grid(row={rowControl},column=0, columnspan=1, padx=0,pady=0)
-fieldName_{ranNumber} = Entry(root, width=50, borderwidth=2)
-fieldName_{ranNumber}.grid(row={rowControl+1},column=0, columnspan=2, padx=7,pady=2)
-
+	item = f"""title_{ranNumber} = Label(root, text="new item").grid(row={rowControl},column=0, columnspan=1, padx=0,pady=0) #ID_{rowControl}
+#ID_{rowControl}
 
 """
 	for i, line in enumerate(lines):
@@ -106,8 +116,8 @@ fieldName_{ranNumber}.grid(row={rowControl+1},column=0, columnspan=2, padx=7,pad
 
 	with open(f"{fieldName}.py", "w") as f:
 		f.writelines(lines)
-		
-	changeSetting(2)
+
+	changeSetting("sum")
 
 
 def field():
@@ -120,33 +130,9 @@ def field():
 		lines = f.readlines()
 		
 	hashtag = "#Script\n"
-	item = f"""fieldName_{ranNumber} = Entry(root, width=50, borderwidth=2)
-fieldName_{ranNumber}.grid(row={rowControl},column=0, columnspan=2, padx=7,pady=2)
-
-
-"""
-	for i, line in enumerate(lines):
-		if line == hashtag:
-			lines[i-1] = item
-
-	with open(f"{fieldName}.py", "w") as f:
-		f.writelines(lines)
-
-	changeSetting()
-
-
-def label():
-	global rowControl
-	fieldName = fieldNameField.get()
-	ranNumber = random.randint(100000, 999999)
-	getNumberName()
-	
-	with open(f"{fieldName}.py", "r") as f:
-		lines = f.readlines()
-		
-	hashtag = "#Script\n"
-	item = f"""title_{ranNumber} = Label(root, text="new item").grid(row={rowControl},column=0, columnspan=1, padx=0,pady=0)
-
+	item = f"""fieldName_{ranNumber} = Entry(root, width=50, borderwidth=2) #ID_{rowControl}
+fieldName_{ranNumber}.grid(row={rowControl},column=0, columnspan=2, padx=7,pady=2) #ID_{rowControl}
+#ID_{rowControl}
 
 """
 	for i, line in enumerate(lines):
@@ -156,7 +142,7 @@ def label():
 	with open(f"{fieldName}.py", "w") as f:
 		f.writelines(lines)
 
-	changeSetting()
+	changeSetting("sum")
 
 
 def button():
@@ -170,12 +156,12 @@ def button():
 	
 	hashtag1 = "#Button\n"
 	hashtag2 = "#End\n"
-	item1 = f"""def btn_{ranNumber}():
-	pass
-
+	item1 = f"""def btn_{ranNumber}(): #ID_{rowControl}
+	pass #ID_{rowControl}
+#ID_{rowControl}
 
 """
-	item2 = f"""Button_{ranNumber} = Button(root, text="button", padx=40, command=btn_{ranNumber}).grid(row={rowControl}, column=0)
+	item2 = f"""Button_{ranNumber} = Button(root, text="button", padx=40, command=btn_{ranNumber}).grid(row={rowControl}, column=0) #ID_{rowControl}
 
 """
 	for i, line in enumerate(lines):
@@ -187,7 +173,7 @@ def button():
 	with open(f"{fieldName}.py", "w") as f:
 		f.writelines(lines)
 
-	changeSetting()
+	changeSetting("sum")
 	
 def run():
 	fileName = fieldNameField.get()
@@ -230,13 +216,20 @@ else:
 				f.write(file)
 		os.system("start cmd /c python Run.py "+fileName+".py")
 
+
+def deleteItem():
+	getNumberName()
+	if rowControl > 1:
+		removeItem(f"app_{appNumber}.py", f"#ID_{rowControl-1}")
+		changeSetting("sub")
+	
 #Button
 Button_1 = Button(root, text="Create", padx=40, command=create).grid(row=1, column=1)
-Button_2 = Button(root, text="Field + Lable", padx=35, command=fieldLabel).grid(row=5, column=0, pady=3)
-Button_3 = Button(root, text="Field", padx=55, command=field).grid(row=5, column=1, pady=3)
-Button_4 = Button(root, text="Label", padx=55, command=label).grid(row=6, column=0, pady=3)
-Button_5 = Button(root, text="Button", padx=50, command=button).grid(row=6, column=1, pady=3)
 Button_6 = Button(root, text="Run", padx=47, command=run).grid(row=3, column=1)
+Button_4 = Button(root, text="Label", padx=55, command=label).grid(row=5, column=0, pady=3)
+Button_3 = Button(root, text="Field", padx=55, command=field).grid(row=5, column=1, pady=3)
+Button_5 = Button(root, text="Button", padx=50, command=button).grid(row=6, column=0, pady=3)
+Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=deleteItem).grid(row=6, column=1)
 
 #End
 root.mainloop()
