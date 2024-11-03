@@ -133,7 +133,8 @@ def button():
 	searchAndWriteFile(f"{fieldName}.py", hashtag1, lines, item1)
 	searchAndWriteFile(f"{fieldName}.py", hashtag2, lines, item2)
 	changeSetting()
-	
+
+
 def run():
 	fileName = fieldNameField.get()
 	file = f"""import time\nimport os\nimport subprocess\nimport sys\n\ndef run_code_from_file(filename):\n\tprocess = subprocess.Popen(['python', filename])\n\treturn process\n\ndef watch_file(filename, interval=1):\n\tlast_modified = os.path.getmtime(filename)\n\tprocess = run_code_from_file(filename)\n    \n\twhile True:\n\t\ttry:\n\t\t\tcurrent_modified = os.path.getmtime(filename)\n\t\t\tif current_modified != last_modified:\n\t\t\t\tprint("\\n--- Executing Code ---")\n\t\t\t\tprocess.terminate()\n\t\t\t\tprocess = run_code_from_file(filename)\n\t\t\t\tlast_modified = current_modified\n\t\t\ttime.sleep(interval)\n\t\texcept KeyboardInterrupt:\n\t\t\tprint("\\nStop Monitoring.")\n\t\t\tprocess.terminate()\n\t\t\tbreak\n\nif len(sys.argv) > 1:\n\tlink = sys.argv[1]\n\twatch_file(link)\nelse:\n\tprint("input not found.")"""
