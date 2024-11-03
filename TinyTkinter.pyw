@@ -98,10 +98,8 @@ def label():
 	ranNumber = createRandomNumber()
 	
 	hashtag = "#Script\n"
-	item = f"""title_{ranNumber} = Label(root, text="new item").grid(row={rowControl},column=0, columnspan=1, padx=0,pady=0) #ID_{rowControl}
-#ID_{rowControl}
-
-"""
+	item = f"""title_{ranNumber} = Label(root, text="new item").grid(row={rowControl},column=0, columnspan=1, padx=0,pady=0) #ID_{rowControl}\n\n"""
+	
 	lines = readFile(f"{fieldName}.py")
 	searchAndWriteFile(f"{fieldName}.py", hashtag, lines, item)
 	changeSetting()
@@ -114,11 +112,7 @@ def field():
 	ranNumber = createRandomNumber()
 	
 	hashtag = "#Script\n"
-	item = f"""fieldName_{ranNumber} = Entry(root, width=50, borderwidth=2) #ID_{rowControl}
-fieldName_{ranNumber}.grid(row={rowControl},column=0, columnspan=2, padx=7,pady=2) #ID_{rowControl}
-#ID_{rowControl}
-
-"""
+	item = f"""fieldName_{ranNumber} = Entry(root, width=50, borderwidth=2) #ID_{rowControl}\nfieldName_{ranNumber}.grid(row={rowControl},column=0, columnspan=2, padx=7,pady=2) #ID_{rowControl}\n#ID_{rowControl}\n\n"""
 	lines = readFile(f"{fieldName}.py")
 	searchAndWriteFile(f"{fieldName}.py", hashtag, lines, item)
 	changeSetting()
@@ -132,14 +126,9 @@ def button():
 	
 	hashtag1 = "#Button\n"
 	hashtag2 = "#End\n"
-	item1 = f"""def btn_{ranNumber}(): #ID_{rowControl}
-	pass #ID_{rowControl}
-#ID_{rowControl}
-
-"""
-	item2 = f"""Button_{ranNumber} = Button(root, text="button", padx=40, command=btn_{ranNumber}).grid(row={rowControl}, column=0) #ID_{rowControl}
-
-"""
+	item1 = f"""def btn_{ranNumber}(): #ID_{rowControl}\n\tpass #ID_{rowControl}\n#ID_{rowControl}\n\n"""
+	item2 = f"""Button_{ranNumber} = Button(root, text="button", padx=40, command=btn_{ranNumber}).grid(row={rowControl}, column=0) #ID_{rowControl}\n\n"""
+	
 	lines = readFile(f"{fieldName}.py")
 	searchAndWriteFile(f"{fieldName}.py", hashtag1, lines, item1)
 	searchAndWriteFile(f"{fieldName}.py", hashtag2, lines, item2)
