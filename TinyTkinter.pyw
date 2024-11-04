@@ -1,6 +1,6 @@
 from tkinter import *
-import os
-import random
+from os import path, system
+from random import randint
 
 #Header
 root = Tk()
@@ -68,14 +68,8 @@ def changeSetting(row=1):
 	writeFile(f"setting_{appNumber}.txt", lines)
 
 
-def removeItem(fieldName, uniqueCode):
-	lines = readFile(fieldName)
-	newLines = [line for line in lines if uniqueCode not in line]
-	writeFile(fieldName, newLines)
-
-
 def createRandomNumber():
-	return random.randint(100000, 999999)
+	return randint(100000, 999999)
 
 
 def create():
@@ -91,73 +85,81 @@ def create():
 	fieldNameField.insert(0, f"app_{ranNumber}")
 
 
+def run():
+	fileName = fieldNameField.get()
+	file = f"""from time import sleep\nfrom os import path\nfrom subprocess import Popen\nfrom sys import argv\n\ndef run_code_from_file(filename):\n\tprocess = Popen(['python', filename])\n\treturn process\n\ndef watch_file(filename, interval=1):\n\tlast_modified = path.getmtime(filename)\n\tprocess = run_code_from_file(filename)\n    \n\twhile True:\n\t\ttry:\n\t\t\tcurrent_modified = path.getmtime(filename)\n\t\t\tif current_modified != last_modified:\n\t\t\t\tprint("\\n--- Executing Code ---")\n\t\t\t\tprocess.terminate()\n\t\t\t\tprocess = run_code_from_file(filename)\n\t\t\t\tlast_modified = current_modified\n\t\t\tsleep(interval)\n\t\texcept KeyboardInterrupt:\n\t\t\tprint("\\nStop Monitoring.")\n\t\t\tprocess.terminate()\n\t\t\tbreak\n\nif len(argv) > 1:\n\tlink = argv[1]\n\twatch_file(link)\nelse:\n\tprint("input not found.")"""
+	if(fileName):
+		if not path.exists("Run.py"):
+			with open("Run.py", "w") as f:
+				f.write(file)
+		system("start cmd /c python Run.py "+fileName+".py")
+
+
 def label():
 	getNumberApp()
 	global rowControl
 	fieldName = fieldNameField.get()
-	ranNumber = createRandomNumber()
-	
-	hashtag = "#Script\n"
-	item = f"""title_{ranNumber} = Label(root, text="new item").grid(row={rowControl},column=0, columnspan=1, padx=0,pady=0) #ID_{rowControl}\n\n"""
-	
-	lines = readFile(f"{fieldName}.py")
-	searchAndWriteFile(f"{fieldName}.py", hashtag, lines, item)
-	changeSetting()
+	if(fieldName):
+		ranNumber = createRandomNumber()
+
+		hashtag = "#Script\n"
+		item = f"""title_{ranNumber} = Label(root, text="new item").grid(row={rowControl},column=0, columnspan=1, padx=0,pady=0) #ID_{rowControl}\n\n"""
+		lines = readFile(f"{fieldName}.py")
+		searchAndWriteFile(f"{fieldName}.py", hashtag, lines, item)
+		changeSetting()
 
 
 def field():
 	getNumberApp()
 	global rowControl
 	fieldName = fieldNameField.get()
-	ranNumber = createRandomNumber()
-	
-	hashtag = "#Script\n"
-	item = f"""fieldName_{ranNumber} = Entry(root, width=50, borderwidth=2) #ID_{rowControl}\nfieldName_{ranNumber}.grid(row={rowControl},column=0, columnspan=2, padx=7,pady=2) #ID_{rowControl}\n#ID_{rowControl}\n\n"""
-	lines = readFile(f"{fieldName}.py")
-	searchAndWriteFile(f"{fieldName}.py", hashtag, lines, item)
-	changeSetting()
+	if(fieldName):
+		ranNumber = createRandomNumber()
+		
+		hashtag = "#Script\n"
+		item = f"""fieldName_{ranNumber} = Entry(root, width=50, borderwidth=2) #ID_{rowControl}\nfieldName_{ranNumber}.grid(row={rowControl},column=0, columnspan=2, padx=7,pady=2) #ID_{rowControl}\n#ID_{rowControl}\n\n"""
+		lines = readFile(f"{fieldName}.py")
+		searchAndWriteFile(f"{fieldName}.py", hashtag, lines, item)
+		changeSetting()
 
 
 def button():
 	getNumberApp()
 	global rowControl
 	fieldName = fieldNameField.get()
-	ranNumber = createRandomNumber()
-	
-	hashtag1 = "#Button\n"
-	hashtag2 = "#End\n"
-	item1 = f"""def btn_{ranNumber}(): #ID_{rowControl}\n\tpass #ID_{rowControl}\n#ID_{rowControl}\n\n"""
-	item2 = f"""Button_{ranNumber} = Button(root, text="button", padx=40, command=btn_{ranNumber}).grid(row={rowControl}, column=0) #ID_{rowControl}\n\n"""
-	
-	lines = readFile(f"{fieldName}.py")
-	searchAndWriteFile(f"{fieldName}.py", hashtag1, lines, item1)
-	searchAndWriteFile(f"{fieldName}.py", hashtag2, lines, item2)
-	changeSetting()
+
+	if(fieldName):
+		ranNumber = createRandomNumber()
+		
+		hashtag1 = "#Button\n"
+		hashtag2 = "#End\n"
+		item1 = f"""def btn_{ranNumber}(): #ID_{rowControl}\n\tpass #ID_{rowControl}\n#ID_{rowControl}\n\n"""
+		item2 = f"""Button_{ranNumber} = Button(root, text="button", padx=40, command=btn_{ranNumber}).grid(row={rowControl}, column=0) #ID_{rowControl}\n\n"""
+		
+		lines = readFile(f"{fieldName}.py")
+		searchAndWriteFile(f"{fieldName}.py", hashtag1, lines, item1)
+		searchAndWriteFile(f"{fieldName}.py", hashtag2, lines, item2)
+		changeSetting()
 
 
-def run():
-	fileName = fieldNameField.get()
-	file = f"""import time\nimport os\nimport subprocess\nimport sys\n\ndef run_code_from_file(filename):\n\tprocess = subprocess.Popen(['python', filename])\n\treturn process\n\ndef watch_file(filename, interval=1):\n\tlast_modified = os.path.getmtime(filename)\n\tprocess = run_code_from_file(filename)\n    \n\twhile True:\n\t\ttry:\n\t\t\tcurrent_modified = os.path.getmtime(filename)\n\t\t\tif current_modified != last_modified:\n\t\t\t\tprint("\\n--- Executing Code ---")\n\t\t\t\tprocess.terminate()\n\t\t\t\tprocess = run_code_from_file(filename)\n\t\t\t\tlast_modified = current_modified\n\t\t\ttime.sleep(interval)\n\t\texcept KeyboardInterrupt:\n\t\t\tprint("\\nStop Monitoring.")\n\t\t\tprocess.terminate()\n\t\t\tbreak\n\nif len(sys.argv) > 1:\n\tlink = sys.argv[1]\n\twatch_file(link)\nelse:\n\tprint("input not found.")"""
-	if(fileName):
-		if not os.path.exists("Run.py"):
-			with open("Run.py", "w") as f:
-				f.write(file)
-		os.system("start cmd /c python Run.py "+fileName+".py")
-
-
-def deleteItem():
+def removeItem():
 	getNumberApp()
 	if rowControl > 1:
-		removeItem(f"app_{appNumber}.py", f"#ID_{rowControl-1}")
+		fieldName = f"app_{appNumber}.py"
+		uniqueCode = f"#ID_{rowControl-1}"
+		lines = readFile(fieldName)
+		newLines = [line for line in lines if uniqueCode not in line]
+		writeFile(fieldName, newLines)
 		changeSetting(-1)
-	
+
+
 #Button
 Button_1 = Button(root, text="Create", padx=40, command=create).grid(row=1, column=1)
 Button_6 = Button(root, text="Run", padx=47, command=run).grid(row=3, column=1)
 Button_4 = Button(root, text="Label", padx=55, command=label).grid(row=5, column=0, pady=3)
 Button_3 = Button(root, text="Field", padx=55, command=field).grid(row=5, column=1, pady=3)
 Button_5 = Button(root, text="Button", padx=50, command=button).grid(row=6, column=0, pady=3)
-Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=deleteItem).grid(row=6, column=1)
+Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=6, column=1)
 
 #End
 root.mainloop()
