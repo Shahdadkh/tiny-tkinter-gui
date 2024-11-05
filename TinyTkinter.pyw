@@ -5,7 +5,7 @@ from random import randint
 #Header
 root = Tk()
 root.title("Tiny Tkinter GUI")
-root.geometry("320x170")
+#root.geometry("320x170")
 root.resizable(width=False,height=False)
 
 #Input
