@@ -40,26 +40,26 @@ def searchAndWriteFile(fieldName, hashtag, lines, item):
 def getInformation():
 	if(fieldNameField.get()):
 		fieldName = fieldNameField.get()
-		appNumber = fieldName.split("_")[1]
+		appNumber = fieldName.strip().split("_")[1]
+		fieldName = f"{fieldName}.py"
 		fieldNameSetting = f"setting_{appNumber}.txt"
 		lines = readFile(fieldNameSetting)
 		rowControl = int(lines[0].strip().split()[1])
-		return fieldName, appNumber, rowControl #('app_651145', '651145', 1)
+		return fieldName, fieldNameSetting, rowControl
 	return False, 0, 0
 
 
 def changeSetting(row=1):
-	_, appNumber, rowControl = getInformation();
+	_, fieldNameSetting, rowControl = getInformation();
 	rowControl += row
-	fieldName = f"setting_{appNumber}.txt"
 	hashtag = "ROW_CONTROL="
 	item = f"ROW_CONTROL= {rowControl}"
 
-	lines = readFile(fieldName)
+	lines = readFile(fieldNameSetting)
 	for i, line in enumerate(lines):
 		if hashtag in line:
 			lines[i] = item
-	writeFile(fieldName, lines)
+	writeFile(fieldNameSetting, lines)
 
 
 def createRandomNumber():
@@ -83,17 +83,17 @@ def create():
 def run():
 	fieldName, _, _ = getInformation();
 	if(fieldName):
+		executeName = "Run.py"
 		file = f"""from time import sleep\nfrom os import path\nfrom subprocess import Popen\nfrom sys import argv\n\ndef run_code_from_file(filename):\n\tprocess = Popen(['python', filename])\n\treturn process\n\ndef watch_file(filename, interval=1):\n\tlast_modified = path.getmtime(filename)\n\tprocess = run_code_from_file(filename)\n    \n\twhile True:\n\t\ttry:\n\t\t\tcurrent_modified = path.getmtime(filename)\n\t\t\tif current_modified != last_modified:\n\t\t\t\tprint("\\n--- Executing Code ---")\n\t\t\t\tprocess.terminate()\n\t\t\t\tprocess = run_code_from_file(filename)\n\t\t\t\tlast_modified = current_modified\n\t\t\tsleep(interval)\n\t\texcept KeyboardInterrupt:\n\t\t\tprint("\\nStop Monitoring.")\n\t\t\tprocess.terminate()\n\t\t\tbreak\n\nif len(argv) > 1:\n\tlink = argv[1]\n\twatch_file(link)\nelse:\n\tprint("input not found.")"""
-		if not path.exists("Run.py"):
-			with open("Run.py", "w") as f:
+		if not path.exists(executeName):
+			with open(executeName, "w") as f:
 				f.write(file)
-		system("start cmd /c python Run.py "+fieldName+".py")
+		system(f"start cmd /c python {executeName} {fieldName}")
 
 
 def addLabel():
 	fieldName, _, rowControl = getInformation();
 	if(fieldName):
-		fieldName = f"{fieldName}.py"
 		ranNumber = createRandomNumber()
 		hashtag = "#Script\n"
 		item = f"""title_{ranNumber} = Label(root, text="new item").grid(row={rowControl},column=0, columnspan=1, padx=0,pady=0) #ID_{rowControl}\n\n"""
@@ -105,7 +105,6 @@ def addLabel():
 def addField():
 	fieldName, _, rowControl = getInformation();
 	if(fieldName):
-		fieldName = f"{fieldName}.py"
 		ranNumber = createRandomNumber()
 		hashtag = "#Script\n"
 		item = f"""fieldName_{ranNumber} = Entry(root, width=50, borderwidth=2) #ID_{rowControl}\nfieldName_{ranNumber}.grid(row={rowControl},column=0, columnspan=2, padx=7,pady=2) #ID_{rowControl}\n#ID_{rowControl}\n\n"""
@@ -117,7 +116,6 @@ def addField():
 def addButton():
 	fieldName, _, rowControl = getInformation();
 	if(fieldName):
-		fieldName = f"{fieldName}.py"
 		ranNumber = createRandomNumber()
 		hashtag1 = "#Button\n"
 		hashtag2 = "#End\n"
@@ -133,7 +131,6 @@ def addButton():
 def removeItem():
 	fieldName, _, rowControl = getInformation()
 	if rowControl > 1:
-		fieldName = f"{fieldName}.py"
 		uniqueCode = f"#ID_{rowControl-1}"
 		lines = readFile(fieldName)
 		newLines = [line for line in lines if uniqueCode not in line]
