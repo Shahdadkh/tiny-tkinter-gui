@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 from os import path, system
 from random import randint
 
@@ -89,6 +90,8 @@ def run():
 			with open(executeName, "w") as f:
 				f.write(file)
 		system(f"start cmd /c python {executeName} {fieldName}")
+	else:
+		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 
 
 def addLabel():
@@ -100,6 +103,8 @@ def addLabel():
 		lines = readFile(fieldName)
 		searchAndWriteFile(fieldName, hashtag, lines, item)
 		changeSetting()
+	else:
+		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 
 
 def addField():
@@ -111,6 +116,8 @@ def addField():
 		lines = readFile(fieldName)
 		searchAndWriteFile(fieldName, hashtag, lines, item)
 		changeSetting()
+	else:
+		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 
 
 def addButton():
@@ -126,6 +133,8 @@ def addButton():
 		searchAndWriteFile(fieldName, hashtag1, lines, item1)
 		searchAndWriteFile(fieldName, hashtag2, lines, item2)
 		changeSetting()
+	else:
+		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 
 
 def removeItem():
