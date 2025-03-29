@@ -46,6 +46,14 @@ def searchAndWriteFile(fieldName, hashtag, lines, item):
 	writeFile(fieldName, lines) # write new line in app_123456.py
 
 
+ # search hashtag in app_123456.py and change config
+def searchAndChangeConfig(fieldName, hashtag, lines, item):
+	for i, line in enumerate(lines):
+		if hashtag in line:
+			lines[i] = item # search hashtag in app_123456.py and add item 
+	writeFile(fieldName, lines) # write new line in app_123456.py
+
+
 def searchAndReturn(variableName, content):
 	 # If 'content' is a list, join its elements into a single string
 	if isinstance(content, list):
@@ -69,9 +77,11 @@ def getInformation():
 		fieldName = fieldNameField.get() # Get app_123456
 		fieldName = f"{fieldName}.py" # app_123456.py
 		lines = readFile(fieldName) # Read app_123456.py
+
 		idControl = searchAndReturn("ID_CONTROL", lines)
 		rowControl = searchAndReturn("ROW_CONTROL", lines)
 		colControl = searchAndReturn("COL_CONTROL", lines)
+		
 		return fieldName, idControl, rowControl, colControl # Return app_123456.py, ID_Control number
 	return False, 0, 0, 0
 
@@ -83,13 +93,8 @@ def changeSetting(row=1):
 	idControl += row
 	hashtag = "ID_CONTROL="
 	item = f"ID_CONTROL= {idControl}\n"
-
 	lines = readFile(fieldName) # Read app_123456.py
-	for i, line in enumerate(lines):
-		if hashtag in line:
-			lines[i] = item # search hashtag in app_123456.py and add item 
-
-	writeFile(fieldName, lines) # write new line in app_123456.py
+	searchAndChangeConfig(fieldName, hashtag, lines, item)  # search hashtag in app_123456.py and change config
 
 
 def createRandomNumber():
