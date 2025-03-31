@@ -1,8 +1,8 @@
 from tkinter import *
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 from os import path, system
 from random import randint
-from re import search, MULTILINE
+from re import search, MULTILINE, sub
 
 #Header
 root = Tk()
@@ -17,8 +17,6 @@ titleNameField = Entry(root, width=40, borderwidth=2)
 titleNameField.grid(row=0,column=1, columnspan=1, padx=0,pady=0)
 titleNameField.insert(END, "New Application")
 
-fieldName = Label(root, text="App Name PY:")
-fieldName.grid(row=1,column=0, columnspan=1, padx=0,pady=0)
 fieldNameField = Entry(root, width=40, borderwidth=2)
 fieldNameField.grid(row=1,column=1, columnspan=1, padx=7,pady=2)
 
@@ -90,7 +88,6 @@ def searchAndReturn(variableName, content):
 def getInformation():
 	if(fieldNameField.get()):
 		fieldName = fieldNameField.get() # Get app_123456
-		fieldName = f"{fieldName}.py" # app_123456.py
 		lines = readFile(fieldName) # Read app_123456.py
 		idControl = searchAndReturn("ID_CONTROL", lines)
 	
@@ -102,6 +99,24 @@ def getInformation():
 		return fieldName, idControl, rowControl, colControl, spinControl, sizeControl # Return app_123456.py, ID_Control number
 	return False, 0, 0, 0, 0, 0
 
+
+def selectFile():
+	filePath = filedialog.askopenfilename()
+	if filePath:
+		fileName = path.basename(filePath)
+		fieldNameField.delete(0, 'end')
+		fieldNameField.insert(0, fileName)
+
+
+def cleanAndDeployApp():
+	fieldName, _, _, _, _, _ = getInformation()
+	if(fieldName):
+		lines = readFile(fieldName)
+		cleanLines = [sub(r'\s*#ID_\d+', '', line) for line in lines]
+		writeFile(f"out_{fieldName}", cleanLines)
+	else:
+		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+    
 
 def resetColCount():
 	# Clear the ColCount field and reset it to 0
@@ -163,7 +178,7 @@ def create():
 	writeFile(fieldNameApp, file) # create files and write into it
 	
 	fieldNameField.delete(0, END) # Delete all text from field
-	fieldNameField.insert(0, fieldNameApp.strip().split(".")[0]) # Insert new to field like "app_{ranNumber}" without .py
+	fieldNameField.insert(0, fieldNameApp) # Insert new to field like "app_{ranNumber}" without .py
 
 
 # Runs the program by first creating a file named `Run.py`, 
@@ -257,6 +272,7 @@ def removeItem():
 
 #Button
 Button_1 = Button(root, text="Create", padx=40, command=create).grid(row=0, column=2)
+Button_12 = Button(root, text="Browse", padx=47, command=selectFile).grid(row=1, column=0)
 Button_6 = Button(root, text="Run", padx=47, command=run).grid(row=1, column=2)
 Button_10 = Button(root, text="Next", padx=45, command=nextRowCount).grid(row=5, column=2)
 Button_8 = Button(root, text="Reset", padx=42, command=resetColCount).grid(row=6, column=2)
@@ -264,6 +280,7 @@ Button_9 = Button(root, text="Reset", padx=42, command=resetSpinCount).grid(row=
 Button_4 = Button(root, text="Label", padx=55, command=addLabel).grid(row=9, column=0)
 Button_3 = Button(root, text="Field", padx=55, command=addField).grid(row=9, column=1)
 Button_5 = Button(root, text="Button", padx=55, command=addButton).grid(row=9, column=2)
+Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=10, column=2)
 Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=10, column=1)
 
 #End
