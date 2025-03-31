@@ -11,25 +11,33 @@ root.title("Tiny Tkinter GUI")
 root.resizable(width=False,height=False)
 
 #Input
-titleName = Label(root, text="Title App:").grid(row=0,column=0, columnspan=1, padx=0,pady=0)
-titleNameField = Entry(root, width=50, borderwidth=2)
-titleNameField.grid(row=2,column=0, columnspan=2, padx=7,pady=2)
+titleName = Label(root, text="Title App:", width=10)
+titleName.grid(row=0,column=0, columnspan=1, padx=0,pady=0)
+titleNameField = Entry(root, width=40, borderwidth=2)
+titleNameField.grid(row=0,column=1, columnspan=1, padx=0,pady=0)
 titleNameField.insert(END, "New Application")
 
-fieldName = Label(root, text="App Name PY:").grid(row=3,column=0, columnspan=1, padx=0,pady=0)
-fieldNameField = Entry(root, width=50, borderwidth=2)
-fieldNameField.grid(row=4,column=0, columnspan=2, padx=7,pady=2)
+fieldName = Label(root, text="App Name PY:")
+fieldName.grid(row=1,column=0, columnspan=1, padx=0,pady=0)
+fieldNameField = Entry(root, width=40, borderwidth=2)
+fieldNameField.grid(row=1,column=1, columnspan=1, padx=7,pady=2)
 
 #Spinbox
 RowCountName = Label(root, text="Row Count:").grid(row=5,column=0)
-RowCount = Spinbox(root, from_=0, to=25)
+RowCount = Spinbox(root, from_=0, to=25, width=38)
 RowCount.grid(row=5,column=1)
-ColCountName = Label(root, text="Col Count:").grid(row=6,column=0)
-ColCount = Spinbox(root, from_=0, to=25)
+ColCountName = Label(root, text="Column Count:").grid(row=6,column=0)
+ColCount = Spinbox(root, from_=0, to=25, width=38)
 ColCount.grid(row=6,column=1)
-SpinCountName = Label(root, text="Span Count:").grid(row=7,column=0)
-SpinCount = Spinbox(root, from_=1, to=25)
+SpinCountName = Label(root, text="Col. Span Count:").grid(row=7,column=0)
+SpinCount = Spinbox(root, from_=1, to=25, width=38)
 SpinCount.grid(row=7,column=1)
+
+#Scale
+scaleSizeName = Label(root, text="Size Control:").grid(row=8,column=0)
+scaleSize = Scale(root, length=380, from_=0, to=500, orient="horizontal")
+scaleSize.grid(row=8,column=1, columnspan=2)
+scaleSize.set(40)
 
 #Script
 def readFile(fieldName):
@@ -85,38 +93,72 @@ def getInformation():
 		fieldName = f"{fieldName}.py" # app_123456.py
 		lines = readFile(fieldName) # Read app_123456.py
 		idControl = searchAndReturn("ID_CONTROL", lines)
-		#rowControl = searchAndReturn("ROW_CONTROL", lines)
-		#colControl = searchAndReturn("COL_CONTROL", lines)
+	
 		rowControl = RowCount.get()
 		colControl = ColCount.get()
 		spinControl = SpinCount.get()
+		sizeControl = scaleSize.get()
 		
-		return fieldName, idControl, rowControl, colControl, spinControl # Return app_123456.py, ID_Control number
-	return False, 0, 0, 0, 0
+		return fieldName, idControl, rowControl, colControl, spinControl, sizeControl # Return app_123456.py, ID_Control number
+	return False, 0, 0, 0, 0, 0
+
+
+def resetColCount():
+	# Clear the ColCount field and reset it to 0
+	ColCount.delete(0, 'end')
+	ColCount.insert(0, 0)
+
+
+def resetSpinCount():
+	# Clear the SpinCount field and reset it to 1
+	SpinCount.delete(0, 'end')
+	SpinCount.insert(0, 1)
+
+
+def changeColCount(i=1):
+	 # Get the current value from ColCount and update it by i
+	value = int(ColCount.get())
+	value = max(0, value + i) # Ensure the value does not go below 0
+	ColCount.delete(0, 'end')
+	ColCount.insert(0, str(value))
+
+
+def nextRowCount():
+	# Increment the RowCount value by 1
+	value = int(RowCount.get())
+	value += 1
+	RowCount.delete(0, 'end')
+	RowCount.insert(0, str(value))
+
+	# Reset ColCount to 0
+	ColCount.delete(0, 'end')
+	ColCount.insert(0, 0)
+
+	# Reset SpinCount to 1
+	SpinCount.delete(0, 'end')
+	SpinCount.insert(0, 1)
 
 
 # This function increases or decreases the value of `ID_CONTROL` in file by one unit.
 def changeSetting(row=1):
-	fieldName, idControl, _, _, _ = getInformation()
+	fieldName, idControl, _, _, _, _ = getInformation()
 
 	idControl += row
-	hashtag = "ID_CONTROL="
-	item = f"ID_CONTROL= {idControl}\n"
 	lines = readFile(fieldName) # Read app_123456.py
-	searchAndChangeConfig(fieldName, hashtag, lines, item)  # search hashtag in app_123456.py and change config
+	searchAndChangeConfig(fieldName, "ID_CONTROL=", lines, f"ID_CONTROL= {idControl}\n")  # search hashtag in app_123456.py and change config
 
 
 def createRandomNumber():
-	return randint(1000, 9999) # Generates a random 4-digit number
+	return randint(100, 999) # Generates a random 3-digit number
 
 
 # Creates a new program using Tkinter (e.g., `app_123456.py`)
 def create():
 	titleName = titleNameField.get() # Get app_title_name
-	ranNumber = createRandomNumber() # Generates a random 4-digit number
+	ranNumber = createRandomNumber()
 
 	fieldNameApp = f"app_{ranNumber}.py" # create new name for app (e.g., `app_123456.py`)
-	file = f"""from tkinter import *\n\n#Header\nroot = Tk()\nroot.title("{titleName}")\n#root.geometry("320x200")\n#root.resizable(width=False,height=False)\n\n#Config\nID_CONTROL= 1\nROW_CONTROL= 0\nCOL_CONTROL= 0\n\n#Input\n\n#Script\n\n#Button\n\n#End\nroot.mainloop()"""
+	file = f"""from tkinter import *\n\n#Header\nroot = Tk()\nroot.title("{titleName}")\n#root.geometry("320x200")\n#root.resizable(width=False,height=False)\n\n#Config\nID_CONTROL= 1\n\n#Input\n\n#Script\n\n#Button\n\n#End\nroot.mainloop()"""
 	
 	writeFile(fieldNameApp, file) # create files and write into it
 	
@@ -127,7 +169,7 @@ def create():
 # Runs the program by first creating a file named `Run.py`, 
 # which monitors file changes and restarts the program if any changes are detected.
 def run():
-	fieldName, _, _, _, _ = getInformation()
+	fieldName, _, _, _, _, _ = getInformation()
 
 	if(fieldName):
 		executeName = "Run.py"
@@ -144,15 +186,15 @@ def run():
 #	Reads and increases the value of ID_CONTROL.
 #	Adds a new label at the specified position (#Script).
 def addLabel():
-	fieldName, idControl, rowControl, colControl, spinControl = getInformation()
+	fieldName, idControl, rowControl, colControl, spinControl, _ = getInformation()
 
 	if(fieldName):
-		ranNumber = createRandomNumber() # Generates a random 4-digit number
 		hashtag = "#Script\n"
-		item = f"""title_{ranNumber} = Label(root, text="new item").grid(row={rowControl},column={colControl}, columnspan={spinControl}, padx=0,pady=0) #ID_{idControl}\n\n"""
+		item = f"""title_{idControl} = Label(root, text="new item") #ID_{idControl}\ntitle_{idControl}.grid(row={rowControl},column={colControl}, columnspan={spinControl}, padx=0,pady=0) #ID_{idControl}\n\n"""
 		lines = readFile(fieldName)
 		searchAndWriteFile(fieldName, hashtag, lines, item) # search hashtag in app_123456.py and add item before hashtag
 		changeSetting()
+		changeColCount()
 	else:
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 
@@ -161,15 +203,15 @@ def addLabel():
 #	Reads and increases the value of ID_CONTROL.
 #	Adds an Entry at the appropriate position (#Script).
 def addField():
-	fieldName, idControl, rowControl, colControl, spinControl = getInformation()
+	fieldName, idControl, rowControl, colControl, spinControl, sizeControl = getInformation()
 
 	if(fieldName):
-		ranNumber = createRandomNumber() # Generates a random 4-digit number
 		hashtag = "#Script\n"
-		item = f"""fieldName_{ranNumber} = Entry(root, width=50, borderwidth=2) #ID_{idControl}\nfieldName_{ranNumber}.grid(row={rowControl},column={colControl}, columnspan={spinControl}, padx=7,pady=2) #ID_{idControl}\n#ID_{idControl}\n\n"""
+		item = f"""fieldName_{idControl} = Entry(root, width={sizeControl}, borderwidth=2) #ID_{idControl}\nfieldName_{idControl}.grid(row={rowControl},column={colControl}, columnspan={spinControl}, padx=7,pady=2) #ID_{idControl}\n#ID_{idControl}\n\n"""
 		lines = readFile(fieldName)
 		searchAndWriteFile(fieldName, hashtag, lines, item) # search hashtag in app_123456.py and add item before hashtag
 		changeSetting()
+		changeColCount()
 	else:
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 
@@ -180,20 +222,20 @@ def addField():
 #	Defines a function for the button at the #Button location.
 #	Adds the button to the user interface at the #End location.
 def addButton():
-	fieldName, idControl, rowControl, colControl, spinControl = getInformation()
+	fieldName, idControl, rowControl, colControl, spinControl, sizeControl = getInformation()
 
 	if(fieldName):
-		ranNumber = createRandomNumber() # Generates a random 4-digit number
 		hashtag1 = "#Button\n"
 		hashtag2 = "#End\n"
-		item1 = f"""def btn_{idControl}_{ranNumber}(): #ID_{idControl}\n\tpass #ID_{idControl}\n#ID_{idControl}\n\n"""
-		item2 = f"""Button_{idControl}_{ranNumber} = Button(root, text=f"Button{idControl}", padx=40, command=btn_{idControl}_{ranNumber}).grid(row={rowControl}, column={colControl}, columnspan={spinControl}) #ID_{idControl}\n\n"""
+		item1 = f"""def btn_{idControl}(): #ID_{idControl}\n\tpass #ID_{idControl}\n#ID_{idControl}\n\n"""
+		item2 = f"""Button_{idControl} = Button(root, text=f"Button{idControl}", padx={sizeControl}, command=btn_{idControl}) #ID_{idControl}\nButton_{idControl}.grid(row={rowControl}, column={colControl}, columnspan={spinControl}) #ID_{idControl}\n\n"""
 		
 		lines = readFile(fieldName)
 		# search hashtag in app_123456.py and add item before hashtag
 		searchAndWriteFile(fieldName, hashtag1, lines, item1)
 		searchAndWriteFile(fieldName, hashtag2, lines, item2)
 		changeSetting()
+		changeColCount()
 	else:
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 
@@ -204,21 +246,25 @@ def addButton():
 #	Saves the file with the updated lines.  
 #	Decreases the value of `ID_CONTROL` by one.
 def removeItem():
-	fieldName, idControl, _, _, _ = getInformation()
+	fieldName, idControl, _, _, _, _ = getInformation()
 	if idControl > 1:
 		uniqueCode = f"#ID_{idControl-1}"
 		lines = readFile(fieldName)
 		newLines = [line for line in lines if uniqueCode not in line]
 		writeFile(fieldName, newLines)
 		changeSetting(-1)
+		changeColCount(-1)
 
 #Button
-Button_1 = Button(root, text="Create", padx=40, command=create).grid(row=0, column=1)
-Button_6 = Button(root, text="Run", padx=47, command=run).grid(row=3, column=1)
-Button_4 = Button(root, text="Label", padx=55, command=addLabel).grid(row=8, column=0, pady=3)
-Button_3 = Button(root, text="Field", padx=55, command=addField).grid(row=8, column=1, pady=3)
-Button_5 = Button(root, text="Button", padx=50, command=addButton).grid(row=9, column=0, pady=3)
-Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=9, column=1)
+Button_1 = Button(root, text="Create", padx=40, command=create).grid(row=0, column=2)
+Button_6 = Button(root, text="Run", padx=47, command=run).grid(row=1, column=2)
+Button_10 = Button(root, text="Next", padx=45, command=nextRowCount).grid(row=5, column=2)
+Button_8 = Button(root, text="Reset", padx=42, command=resetColCount).grid(row=6, column=2)
+Button_9 = Button(root, text="Reset", padx=42, command=resetSpinCount).grid(row=7, column=2)
+Button_4 = Button(root, text="Label", padx=55, command=addLabel).grid(row=9, column=0)
+Button_3 = Button(root, text="Field", padx=55, command=addField).grid(row=9, column=1)
+Button_5 = Button(root, text="Button", padx=55, command=addButton).grid(row=9, column=2)
+Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=10, column=1)
 
 #End
 root.mainloop()
