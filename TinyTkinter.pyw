@@ -16,9 +16,10 @@ titleName.grid(row=0,column=0, columnspan=1, padx=0,pady=0)
 titleNameField = Entry(root, width=40, borderwidth=2)
 titleNameField.grid(row=0,column=1, columnspan=1, padx=0,pady=0)
 titleNameField.insert(END, "New Application")
-
 fieldNameField = Entry(root, width=40, borderwidth=2)
 fieldNameField.grid(row=1,column=1, columnspan=1, padx=7,pady=2)
+fieldNameScale = Entry(root, width=7, borderwidth=2)
+fieldNameScale.grid(row=8,column=2, columnspan=1, sticky="es", padx=10)
 
 #Spinbox
 RowCountName = Label(root, text="Row Count:").grid(row=5,column=0)
@@ -32,10 +33,30 @@ SpinCount = Spinbox(root, from_=1, to=25, width=38)
 SpinCount.grid(row=7,column=1)
 
 #Scale
-scaleSizeName = Label(root, text="Size Control:").grid(row=8,column=0)
-scaleSize = Scale(root, length=380, from_=0, to=500, orient="horizontal")
-scaleSize.grid(row=8,column=1, columnspan=2)
-scaleSize.set(40)
+def sync_from_scale(value):
+	fieldNameScale.delete(0, END)
+	fieldNameScale.insert(0, int(float(value)))
+
+def sync_from_entry(event):
+	try:
+		scaleSize.set(int(fieldNameScale.get()))
+	except ValueError:
+		pass
+
+fieldNameScale.bind("<KeyRelease>", sync_from_entry)
+
+scaleSizeName = Label(root, text="Size Control:").grid(row=8,column=0, sticky="")
+scaleSize = Scale(root, length=350, from_=0, to=1000, orient="horizontal", command=sync_from_scale)
+scaleSize.grid(row=8,column=1, columnspan=2, sticky="w")
+
+defaultScale = 40
+scaleSize.set(defaultScale)
+fieldNameScale.delete(0, 'end')
+fieldNameScale.insert(0, defaultScale)
+
+
+
+
 
 #Script
 def readFile(fieldName):
@@ -277,11 +298,11 @@ Button_6 = Button(root, text="Run", padx=47, command=run).grid(row=1, column=2)
 Button_10 = Button(root, text="Next", padx=45, command=nextRowCount).grid(row=5, column=2)
 Button_8 = Button(root, text="Reset", padx=42, command=resetColCount).grid(row=6, column=2)
 Button_9 = Button(root, text="Reset", padx=42, command=resetSpinCount).grid(row=7, column=2)
-Button_4 = Button(root, text="Label", padx=55, command=addLabel).grid(row=9, column=0)
+Button_4 = Button(root, text="Label", padx=55, command=addLabel).grid(row=9, column=0, pady=10, padx=5)
 Button_3 = Button(root, text="Field", padx=55, command=addField).grid(row=9, column=1)
-Button_5 = Button(root, text="Button", padx=55, command=addButton).grid(row=9, column=2)
-Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=10, column=2)
-Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=10, column=1)
+Button_5 = Button(root, text="Button", padx=50, command=addButton).grid(row=9, column=2, padx=5)
+Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=10, column=0, padx=5)
+Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=10, column=2, pady=5, padx=5)
 
 #End
 root.mainloop()
