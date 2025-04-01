@@ -195,6 +195,15 @@ def selectFile():
 		fieldNameField.delete(0, 'end')
 		fieldNameField.insert(0, fileName)
 
+		lines = readFile(fileName)
+		rowControl = searchAndReturn("ROW_CONTROL", lines)
+		colControl = searchAndReturn("COL_CONTROL", lines)
+		RowCount.delete(0, 'end')
+		RowCount.insert(0, rowControl)
+		ColCount.delete(0, 'end')
+		ColCount.insert(0, colControl)
+
+
 
 def cleanAndDeployApp():
 	fieldName, _, _, _, _, _, _, _ = getInformation()
@@ -263,12 +272,20 @@ def nextRowCount():
 
 
 # This function increases or decreases the value of `ID_CONTROL` in file by one unit.
-def changeSetting(row=1):
-	fieldName, idControl, _, _, _, _, _, _ = getInformation()
+def changeSetting(op, row=1):
+	fieldName, idControl, rowControl, colControl, _, _, _, _ = getInformation()
 
-	idControl += row
-	lines = readFile(fieldName) # Read app_123456.py
-	searchAndChangeConfig(fieldName, "ID_CONTROL=", lines, f"ID_CONTROL= {idControl}\n")  # search hashtag in app_123456.py and change config
+	if(op == "id"):
+		idControl += row
+		lines = readFile(fieldName) # Read app_123456.py
+		searchAndChangeConfig(fieldName, "ID_CONTROL=", lines, f"ID_CONTROL= {idControl}\n")  # search hashtag in app_123456.py and change config
+	elif(op == "row"):
+		lines = readFile(fieldName) # Read app_123456.py
+		searchAndChangeConfig(fieldName, "ROW_CONTROL=", lines, f"ROW_CONTROL= {rowControl}\n")  # search hashtag in app_123456.py and change config
+	elif(op == "col"):
+		colControl = str(max(0, int(colControl) + row))
+		lines = readFile(fieldName) # Read app_123456.py
+		searchAndChangeConfig(fieldName, "COL_CONTROL=", lines, f"COL_CONTROL= {colControl}\n")  # search hashtag in app_123456.py and change config
 
 
 def createRandomNumber():
@@ -281,7 +298,7 @@ def create():
 	ranNumber = createRandomNumber()
 
 	fieldNameApp = f"app_{ranNumber}.py" # create new name for app (e.g., `app_123456.py`)
-	file = f"""from tkinter import *\n\n#Header\nroot = Tk()\nroot.title("{titleName}")\n#root.geometry("320x200")\n#root.resizable(width=False,height=False)\n\n#Config\nID_CONTROL= 1\n\n#Input\n\n#Script\n\n#Button\n\n#End\nroot.mainloop()"""
+	file = f"""from tkinter import *\n\n#Header\nroot = Tk()\nroot.title("{titleName}")\n#root.geometry("320x200")\n#root.resizable(width=False,height=False)\n\n#Config\nID_CONTROL= 1\nROW_CONTROL= 0\nCOL_CONTROL= 0\n\n#Input\n\n#Script\n\n#Button\n\n#End\nroot.mainloop()"""
 	
 	writeFile(fieldNameApp, file) # create files and write into it
 	
@@ -316,7 +333,9 @@ def addLabel():
 		item = f"""title_{idControl} = Label(root, text="new item") #ID_{idControl}\ntitle_{idControl}.grid(row={rowControl},column={colControl}, columnspan={spinControl}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n\n"""
 		lines = readFile(fieldName)
 		searchAndWriteFile(fieldName, hashtag, lines, item) # search hashtag in app_123456.py and add item before hashtag
-		changeSetting()
+		changeSetting("id")
+		changeSetting("row")
+		changeSetting("col")
 		changeColCount()
 	else:
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
@@ -333,7 +352,9 @@ def addField():
 		item = f"""fieldName_{idControl} = Entry(root, width={sizeControl}, borderwidth=2) #ID_{idControl}\nfieldName_{idControl}.grid(row={rowControl},column={colControl}, columnspan={spinControl}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n#ID_{idControl}\n\n"""
 		lines = readFile(fieldName)
 		searchAndWriteFile(fieldName, hashtag, lines, item) # search hashtag in app_123456.py and add item before hashtag
-		changeSetting()
+		changeSetting("id")
+		changeSetting("row")
+		changeSetting("col")
 		changeColCount()
 	else:
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
@@ -357,7 +378,9 @@ def addButton():
 		# search hashtag in app_123456.py and add item before hashtag
 		searchAndWriteFile(fieldName, hashtag1, lines, item1)
 		searchAndWriteFile(fieldName, hashtag2, lines, item2)
-		changeSetting()
+		changeSetting("id")
+		changeSetting("row")
+		changeSetting("col")
 		changeColCount()
 	else:
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
@@ -377,7 +400,8 @@ def removeItem():
 			lines = readFile(fieldName)
 			newLines = [line for line in lines if uniqueCode not in line]
 			writeFile(fieldName, newLines)
-			changeSetting(-1)
+			changeSetting("id", -1)
+			changeSetting("col", -1)
 			changeColCount(-1)
 	else:
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
