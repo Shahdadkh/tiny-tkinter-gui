@@ -202,7 +202,8 @@ def selectFile():
 		RowCount.insert(0, rowControl)
 		ColCount.delete(0, 'end')
 		ColCount.insert(0, colControl)
-
+		SpinCount.delete(0, 'end')
+		SpinCount.insert(0, 1)
 
 
 def cleanAndDeployApp():
@@ -214,12 +215,6 @@ def cleanAndDeployApp():
 	else:
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
     
-
-def resetColCount():
-	# Clear the ColCount field and reset it to 0
-	ColCount.delete(0, 'end')
-	ColCount.insert(0, 0)
-
 
 def resetSpinCount():
 	# Clear the SpinCount field and reset it to 1
@@ -304,6 +299,13 @@ def create():
 	
 	fieldNameField.delete(0, END) # Delete all text from field
 	fieldNameField.insert(0, fieldNameApp) # Insert new to field like "app_{ranNumber}" without .py
+
+	RowCount.delete(0, 'end')
+	RowCount.insert(0, 0)
+	ColCount.delete(0, 'end')
+	ColCount.insert(0, 0)
+	SpinCount.delete(0, 'end')
+	SpinCount.insert(0, 1)
 
 
 # Runs the program by first creating a file named `Run.py`, 
@@ -411,8 +413,7 @@ def removeItem():
 Button_1 = Button(root, text="Create", padx=40, command=create).grid(row=0, column=2)
 Button_12 = Button(root, text="Browse", padx=47, command=selectFile).grid(row=1, column=0)
 Button_6 = Button(root, text="Run", padx=47, command=run).grid(row=1, column=2)
-Button_10 = Button(root, text="Next", padx=45, command=nextRowCount).grid(row=5, column=2)
-Button_8 = Button(root, text="Reset", padx=43, command=resetColCount).grid(row=6, column=2)
+Button_10 = Button(root, text="Next Row", padx=32, command=nextRowCount).grid(row=5, column=2, rowspan=2, ipady=10)
 Button_9 = Button(root, text="Reset", padx=43, command=resetSpinCount).grid(row=7, column=2)
 Button_13 = Button(root, text="Reset", padx=43, command=resetCkeckbox).grid(row=8, column=2)
 Button_14 = Button(root, text="Reset", padx=43, command=resetPadding).grid(row=10, column=2)
