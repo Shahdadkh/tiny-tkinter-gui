@@ -64,7 +64,7 @@ chk_left.grid(row=8, column=1, padx=5)
 chk_right.grid(row=8, column=1, padx=5, sticky="e")
 
 
-#Scale
+#Scale Width
 fieldNameScale = Entry(root, width=7, borderwidth=2)
 fieldNameScale.grid(row=9,column=2, columnspan=1, sticky="e", padx=10)
 
@@ -80,44 +80,106 @@ def sync_from_entry(event):
 
 fieldNameScale.bind("<KeyRelease>", sync_from_entry)
 
-scaleSizeName = Label(root, text="Size Control:").grid(row=9,column=0, sticky="")
-scaleSize = Scale(root, length=350, from_=0, to=1000, orient="horizontal", command=sync_from_scale)
-scaleSize.grid(row=9,column=1, columnspan=2, pady=(0,15), sticky="w")
+scaleSizeName = Label(root, text="Width Control:").grid(row=9,column=0, sticky="")
+scaleSize = Scale(root, length=350, from_=0, to=500, orient="horizontal", command=sync_from_scale)
+scaleSize.grid(row=9,column=1, columnspan=2, pady=(0,0), sticky="w")
 
-defaultScale = 40
+defaultScale = 0
 scaleSize.set(defaultScale)
 fieldNameScale.insert(0, defaultScale)
 
 
+#Scale height
+fieldNameScaleHeight = Entry(root, width=7, borderwidth=2)
+fieldNameScaleHeight.grid(row=10,column=2, columnspan=1, sticky="e", padx=10)
+
+def sync_from_scale_height(value):
+	fieldNameScaleHeight.delete(0, END)
+	fieldNameScaleHeight.insert(0, int(float(value)))
+
+def sync_from_entry_height(event):
+	try:
+		scaleSizeHeight.set(int(fieldNameScaleHeight.get()))
+	except ValueError:
+		pass
+
+fieldNameScaleHeight.bind("<KeyRelease>", sync_from_entry_height)
+
+scaleSizeHeightName = Label(root, text="Height Control:").grid(row=10,column=0, sticky="")
+scaleSizeHeight = Scale(root, length=350, from_=0, to=100, orient="horizontal", command=sync_from_scale_height)
+scaleSizeHeight.grid(row=10,column=1, columnspan=2, pady=(0,15), sticky="w")
+
+defaultScaleHeight = 0
+scaleSizeHeight.set(defaultScaleHeight)
+fieldNameScaleHeight.insert(0, defaultScaleHeight)
+
+
 #padding input
 paddingTitle = Label(root, text="Padding:", width=10)
-paddingTitle.grid(row=10,column=0, columnspan=1, padx=(0,5), sticky="ws")
+paddingTitle.grid(row=11,column=0, columnspan=1, rowspan=2, padx=(0,5), sticky="w")
 
 padUpTitle = Label(root, text="Up", width=10)
-padUpTitle.grid(row=10,column=0, columnspan=1, padx=(0,5), sticky="es")
+padUpTitle.grid(row=11,column=0, columnspan=1, padx=(0,5), sticky="es")
 fieldPadUp = Entry(root, width=4, borderwidth=2)
-fieldPadUp.grid(row=10,column=0, columnspan=1, sticky="es")
+fieldPadUp.grid(row=11,column=0, columnspan=1, sticky="es")
 
 padDownTitle = Label(root, text="Down", width=10)
-padDownTitle.grid(row=10,column=1, columnspan=1, sticky="ws")
+padDownTitle.grid(row=11,column=1, columnspan=1, sticky="ws")
 fieldPadDown = Entry(root, width=4, borderwidth=2)
-fieldPadDown.grid(row=10,column=1, columnspan=1, padx=(58,0), sticky="ws")
+fieldPadDown.grid(row=11,column=1, columnspan=1, padx=(58,0), sticky="ws")
 
 padLeftTitle = Label(root, text="Left", width=10)
-padLeftTitle.grid(row=10,column=1, columnspan=1)
+padLeftTitle.grid(row=11,column=1, columnspan=1)
 fieldPadLeft = Entry(root, width=4, borderwidth=2)
-fieldPadLeft.grid(row=10,column=1, columnspan=1, padx=(65,0))
+fieldPadLeft.grid(row=11,column=1, columnspan=1, padx=(65,0))
 
 padRightTitle = Label(root, text="Right", width=10)
-padRightTitle.grid(row=10,column=1, columnspan=1, padx=(0,10), sticky="e")
+padRightTitle.grid(row=11,column=1, columnspan=1, padx=(0,10), sticky="e")
 fieldPadRight = Entry(root, width=4, borderwidth=2)
-fieldPadRight.grid(row=10,column=1, columnspan=1, sticky="e")
+fieldPadRight.grid(row=11,column=1, columnspan=1, sticky="e")
 
-fieldPadUp .insert(0, 0)
+fieldPadUp.insert(0, 0)
 fieldPadDown.insert(0, 0)
 fieldPadLeft.insert(0, 0)
 fieldPadRight.insert(0, 0)
 
+
+def update_padding(*args):
+	try:
+		value_up_down = int(var_up_down.get())
+		value_right_left = int(var_right_left.get())
+
+		if value_up_down > 0:
+			fieldPadUp.delete(0, END)
+			fieldPadDown.delete(0, END)
+			fieldPadUp.insert(0, value_up_down)
+			fieldPadDown.insert(0, value_up_down)
+
+		if value_right_left > 0:
+			fieldPadRight.delete(0, END)
+			fieldPadLeft.delete(0, END)
+			fieldPadRight.insert(0, value_right_left)
+			fieldPadLeft.insert(0, value_right_left)
+	except ValueError:
+		pass  
+
+var_up_down = StringVar(value="0")
+var_right_left = StringVar(value="0")
+
+var_up_down.trace_add("write", update_padding)
+var_right_left.trace_add("write", update_padding)
+
+padUpDownTitle = Label(root, text="Up/Down", width=10)
+padUpDownTitle.grid(row=12,column=0, columnspan=1, padx=(0,0), sticky="e")
+fieldPadUpDown = Entry(root, width=10, borderwidth=2, textvariable=var_up_down)
+fieldPadUpDown.grid(row=12,column=1, columnspan=1, sticky="w")
+
+padRightLeftTitle = Label(root, text="Left/Right", width=10)
+padRightLeftTitle.grid(row=12,column=1, columnspan=1, padx=(50,0))
+fieldPadRightLeft = Entry(root, width=10, borderwidth=2, textvariable=var_right_left)
+fieldPadRightLeft.grid(row=12,column=1, columnspan=1, sticky="e")
+
+	
 
 #Script
 def readFile(fieldName):
@@ -177,6 +239,7 @@ def getInformation():
 		colControl = ColCount.get()
 		spinControl = SpinCount.get()
 		sizeControl = scaleSize.get()
+		sizeHeightControl = scaleSizeHeight.get()
 		dirControl = update_sticky()
 
 		padup = fieldPadUp.get()
@@ -184,8 +247,8 @@ def getInformation():
 		padleft = fieldPadLeft.get()
 		padright = fieldPadRight.get()
 		
-		return fieldName, idControl, rowControl, colControl, spinControl, sizeControl, dirControl, [padup, paddown, padleft, padright] # Return app_123456.py, ID_Control number
-	return False, 0, 0, 0, 0, 0, "", []
+		return fieldName, idControl, rowControl, colControl, spinControl, [sizeControl, sizeHeightControl], dirControl, [padup, paddown, padleft, padright] # Return app_123456.py, ID_Control number
+	return False, 0, 0, 0, 0, [], "", []
 
 
 def selectFile():
@@ -240,6 +303,12 @@ def resetPadding():
 	fieldPadDown.insert(0, 0)
 	fieldPadLeft.insert(0, 0)
 	fieldPadRight.insert(0, 0)
+
+	fieldPadUpDown.delete(0, 'end')
+	fieldPadRightLeft.delete(0, 'end')
+
+	fieldPadUpDown.insert(0, 0)
+	fieldPadRightLeft.insert(0, 0)
 
 
 def changeColCount(i=1):
@@ -328,11 +397,11 @@ def run():
 #	Reads and increases the value of ID_CONTROL.
 #	Adds a new label at the specified position (#Script).
 def addLabel():
-	fieldName, idControl, rowControl, colControl, spinControl, _, dirControl, padControl = getInformation()
+	fieldName, idControl, rowControl, colControl, spinControl, sizeControl, dirControl, padControl = getInformation()
 
 	if(fieldName):
 		hashtag = "#Script\n"
-		item = f"""title_{idControl} = Label(root, text="new item") #ID_{idControl}\ntitle_{idControl}.grid(row={rowControl},column={colControl}, columnspan={spinControl}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n\n"""
+		item = f"""title_{idControl} = Label(root, text="new item" , width={sizeControl[0]}, height={sizeControl[1]}) #ID_{idControl}\ntitle_{idControl}.grid(row={rowControl},column={colControl}, columnspan={spinControl}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n\n"""
 		lines = readFile(fieldName)
 		searchAndWriteFile(fieldName, hashtag, lines, item) # search hashtag in app_123456.py and add item before hashtag
 		changeSetting("id")
@@ -351,7 +420,7 @@ def addField():
 
 	if(fieldName):
 		hashtag = "#Script\n"
-		item = f"""fieldName_{idControl} = Entry(root, width={sizeControl}, borderwidth=2) #ID_{idControl}\nfieldName_{idControl}.grid(row={rowControl},column={colControl}, columnspan={spinControl}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n#ID_{idControl}\n\n"""
+		item = f"""fieldName_{idControl} = Entry(root, borderwidth=2) #ID_{idControl}\nfieldName_{idControl}.grid(row={rowControl},column={colControl}, columnspan={spinControl}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), ipady={sizeControl[1]}, ipadx={sizeControl[0]}, sticky="{dirControl}") #ID_{idControl}\n#ID_{idControl}\n\n"""
 		lines = readFile(fieldName)
 		searchAndWriteFile(fieldName, hashtag, lines, item) # search hashtag in app_123456.py and add item before hashtag
 		changeSetting("id")
@@ -374,7 +443,7 @@ def addButton():
 		hashtag1 = "#Button\n"
 		hashtag2 = "#End\n"
 		item1 = f"""def btn_{idControl}(): #ID_{idControl}\n\tpass #ID_{idControl}\n#ID_{idControl}\n\n"""
-		item2 = f"""Button_{idControl} = Button(root, text=f"Button{idControl}", padx={sizeControl}, command=btn_{idControl}) #ID_{idControl}\nButton_{idControl}.grid(row={rowControl}, column={colControl}, columnspan={spinControl}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n\n"""
+		item2 = f"""Button_{idControl} = Button(root, text=f"Button{idControl}", command=btn_{idControl}) #ID_{idControl}\nButton_{idControl}.grid(row={rowControl}, column={colControl}, columnspan={spinControl}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), ipady={sizeControl[1]}, ipadx={sizeControl[0]}, sticky="{dirControl}") #ID_{idControl}\n\n"""
 		
 		lines = readFile(fieldName)
 		# search hashtag in app_123456.py and add item before hashtag
@@ -416,12 +485,12 @@ Button_6 = Button(root, text="Run", padx=47, command=run).grid(row=1, column=2)
 Button_10 = Button(root, text="Next Row", padx=32, command=nextRowCount).grid(row=5, column=2, rowspan=2, ipady=10)
 Button_9 = Button(root, text="Reset", padx=43, command=resetSpinCount).grid(row=7, column=2)
 Button_13 = Button(root, text="Reset", padx=43, command=resetCkeckbox).grid(row=8, column=2)
-Button_14 = Button(root, text="Reset", padx=43, command=resetPadding).grid(row=10, column=2)
-Button_4 = Button(root, text="Label", padx=55, command=addLabel).grid(row=11, column=0, pady=(20,10), padx=(5,0))
-Button_3 = Button(root, text="Field", padx=55, command=addField).grid(row=11, column=1)
-Button_5 = Button(root, text="Button", padx=50, command=addButton).grid(row=11, column=2, padx=5)
-Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=12, column=0, padx=(5, 0))
-Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=12, column=2, pady=5, padx=5)
+Button_14 = Button(root, text="Reset", padx=43, command=resetPadding).grid(row=11, column=2, rowspan=2, ipady=10)
+Button_4 = Button(root, text="Label", padx=55, command=addLabel).grid(row=13, column=0, pady=(20,10), padx=(5,0))
+Button_3 = Button(root, text="Field", padx=55, command=addField).grid(row=13, column=1)
+Button_5 = Button(root, text="Button", padx=50, command=addButton).grid(row=13, column=2, padx=5)
+Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=14, column=0, padx=(5, 0))
+Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=14, column=2, pady=5, padx=5)
 
 #End
 root.mainloop()
