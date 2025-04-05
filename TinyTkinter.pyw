@@ -4,193 +4,6 @@ from os import path, system
 from random import randint
 from re import search, MULTILINE, sub
 
-#Header
-root = Tk()
-root.title("Tiny Tkinter GUI")
-#root.geometry("320x170")
-root.resizable(width=False,height=False)
-
-
-#Input
-titleName = Label(root, text="Title App:", width=10)
-titleName.grid(row=0,column=0, columnspan=1, padx=0,pady=0)
-titleNameField = Entry(root, width=40, borderwidth=2)
-titleNameField.grid(row=0,column=1, columnspan=1, padx=0,pady=0)
-titleNameField.insert(END, "New Application")
-
-fieldNameField = Entry(root, width=40, borderwidth=2)
-fieldNameField.grid(row=1,column=1, columnspan=1, padx=7,pady=2)
-
-
-#Spinbox
-RowCountName = Label(root, text="Row Count:").grid(row=5,column=0)
-RowCount = Spinbox(root, from_=0, to=25, width=38)
-RowCount.grid(row=5, column=1)
-ColCountName = Label(root, text="Column Count:").grid(row=6,column=0)
-ColCount = Spinbox(root, from_=0, to=25, width=38)
-ColCount.grid(row=6, column=1)
-SpinCountName = Label(root, text="Col. Span Count:").grid(row=7,column=0)
-SpinCount = Spinbox(root, from_=1, to=25, width=38)
-SpinCount.grid(row=7, column=1)
-rowSpinCountName = Label(root, text="Row Span Count:").grid(row=8,column=0)
-rowSpinCount = Spinbox(root, from_=1, to=25, width=38)
-rowSpinCount.grid(row=8, column=1)
-
-#Checkbox
-checkbox_row_control = 9
-
-def update_sticky():
-	sticky_value = ""
-	if top_var.get():    
-		sticky_value += "n"
-	if bottom_var.get():
-		sticky_value += "s"
-	if left_var.get():
-		sticky_value += "w"
-	if right_var.get():
-		sticky_value += "e"
-	return sticky_value
-
-stickyTitle = Label(root, text="Direction:", width=10)
-stickyTitle.grid(row=checkbox_row_control,column=0, columnspan=1, sticky="w")
-
-top_var = IntVar()
-bottom_var = IntVar()
-left_var = IntVar()
-right_var = IntVar()
-chk_top = Checkbutton(root, text="Top", variable=top_var, command=update_sticky)
-chk_bottom = Checkbutton(root, text="Bottom", variable=bottom_var, command=update_sticky)
-chk_left = Checkbutton(root, text="Left", variable=left_var, command=update_sticky)
-chk_right = Checkbutton(root, text="Right", variable=right_var, command=update_sticky)
-
-chk_top.grid(row=checkbox_row_control, column=0, padx=(0,30), sticky="e")
-chk_bottom.grid(row=checkbox_row_control, column=1, padx=(5,0), sticky="w")
-chk_left.grid(row=checkbox_row_control, column=1, padx=5)
-chk_right.grid(row=checkbox_row_control, column=1, padx=5, sticky="e")
-
-
-#Scale Width
-scale_width_row_control = 10
-
-fieldNameScale = Entry(root, width=7, borderwidth=2)
-fieldNameScale.grid(row=scale_width_row_control,column=2, columnspan=1, sticky="e", padx=10)
-
-def sync_from_scale(value):
-	fieldNameScale.delete(0, END)
-	fieldNameScale.insert(0, int(float(value)))
-
-def sync_from_entry(event):
-	try:
-		scaleSize.set(int(fieldNameScale.get()))
-	except ValueError:
-		pass
-
-fieldNameScale.bind("<KeyRelease>", sync_from_entry)
-
-scaleSizeName = Label(root, text="Width Control:").grid(row=scale_width_row_control,column=0, sticky="")
-scaleSize = Scale(root, length=350, from_=0, to=500, orient="horizontal", command=sync_from_scale)
-scaleSize.grid(row=scale_width_row_control,column=1, columnspan=2, pady=(0,0), sticky="w")
-
-defaultScale = 0
-scaleSize.set(defaultScale)
-fieldNameScale.insert(0, defaultScale)
-
-
-#Scale height
-scale_height_row_control = 11
-
-fieldNameScaleHeight = Entry(root, width=7, borderwidth=2)
-fieldNameScaleHeight.grid(row=scale_height_row_control,column=2, columnspan=1, sticky="e", padx=10)
-
-def sync_from_scale_height(value):
-	fieldNameScaleHeight.delete(0, END)
-	fieldNameScaleHeight.insert(0, int(float(value)))
-
-def sync_from_entry_height(event):
-	try:
-		scaleSizeHeight.set(int(fieldNameScaleHeight.get()))
-	except ValueError:
-		pass
-
-fieldNameScaleHeight.bind("<KeyRelease>", sync_from_entry_height)
-
-scaleSizeHeightName = Label(root, text="Height Control:").grid(row=scale_height_row_control,column=0, sticky="")
-scaleSizeHeight = Scale(root, length=350, from_=0, to=100, orient="horizontal", command=sync_from_scale_height)
-scaleSizeHeight.grid(row=scale_height_row_control,column=1, columnspan=2, pady=(0,15), sticky="w")
-
-defaultScaleHeight = 0
-scaleSizeHeight.set(defaultScaleHeight)
-fieldNameScaleHeight.insert(0, defaultScaleHeight)
-
-
-#padding input
-padding_row_control = 12
-
-paddingTitle = Label(root, text="Padding:", width=10)
-paddingTitle.grid(row=padding_row_control,column=0, columnspan=1, rowspan=2, padx=(0,5), sticky="w")
-
-padUpTitle = Label(root, text="Up", width=10)
-padUpTitle.grid(row=padding_row_control,column=0, columnspan=1, padx=(0,5), sticky="es")
-fieldPadUp = Entry(root, width=4, borderwidth=2)
-fieldPadUp.grid(row=padding_row_control,column=0, columnspan=1, sticky="es")
-
-padDownTitle = Label(root, text="Down", width=10)
-padDownTitle.grid(row=padding_row_control,column=1, columnspan=1, sticky="ws")
-fieldPadDown = Entry(root, width=4, borderwidth=2)
-fieldPadDown.grid(row=padding_row_control,column=1, columnspan=1, padx=(58,0), sticky="ws")
-
-padLeftTitle = Label(root, text="Left", width=10)
-padLeftTitle.grid(row=padding_row_control,column=1, columnspan=1)
-fieldPadLeft = Entry(root, width=4, borderwidth=2)
-fieldPadLeft.grid(row=padding_row_control,column=1, columnspan=1, padx=(65,0))
-
-padRightTitle = Label(root, text="Right", width=10)
-padRightTitle.grid(row=padding_row_control,column=1, columnspan=1, padx=(0,10), sticky="e")
-fieldPadRight = Entry(root, width=4, borderwidth=2)
-fieldPadRight.grid(row=padding_row_control,column=1, columnspan=1, sticky="e")
-
-fieldPadUp.insert(0, 0)
-fieldPadDown.insert(0, 0)
-fieldPadLeft.insert(0, 0)
-fieldPadRight.insert(0, 0)
-
-
-def update_padding(*args):
-	try:
-		value_up_down = int(var_up_down.get())
-		value_right_left = int(var_right_left.get())
-
-		if value_up_down > 0:
-			fieldPadUp.delete(0, END)
-			fieldPadDown.delete(0, END)
-			fieldPadUp.insert(0, value_up_down)
-			fieldPadDown.insert(0, value_up_down)
-
-		if value_right_left > 0:
-			fieldPadRight.delete(0, END)
-			fieldPadLeft.delete(0, END)
-			fieldPadRight.insert(0, value_right_left)
-			fieldPadLeft.insert(0, value_right_left)
-	except ValueError:
-		pass  
-
-var_up_down = StringVar(value="0")
-var_right_left = StringVar(value="0")
-
-var_up_down.trace_add("write", update_padding)
-var_right_left.trace_add("write", update_padding)
-
-padUpDownTitle = Label(root, text="Up/Down", width=10)
-padUpDownTitle.grid(row=padding_row_control + 1,column=0, columnspan=1, padx=(0,0), sticky="e")
-fieldPadUpDown = Entry(root, width=10, borderwidth=2, textvariable=var_up_down)
-fieldPadUpDown.grid(row=padding_row_control + 1,column=1, columnspan=1, sticky="w")
-
-padRightLeftTitle = Label(root, text="Left/Right", width=10)
-padRightLeftTitle.grid(row=padding_row_control + 1,column=1, columnspan=1, padx=(50,0))
-fieldPadRightLeft = Entry(root, width=10, borderwidth=2, textvariable=var_right_left)
-fieldPadRightLeft.grid(row=padding_row_control + 1,column=1, columnspan=1, sticky="e")
-
-	
 
 #Script
 def readFile(fieldName):
@@ -248,11 +61,11 @@ def getInformation():
 	
 		rowControl = RowCount.get()
 		colControl = ColCount.get()
-		spinControl = SpinCount.get()
-		rowSpinControl = rowSpinCount.get()
-		sizeControl = scaleSize.get()
-		sizeHeightControl = scaleSizeHeight.get()
-		dirControl = update_sticky()
+		spinControl = SpinCount.get() #col. spin
+		rowSpinControl = rowSpinCount.get() # row spin
+		sizeControl = scaleSize.get() #width size
+		sizeHeightControl = scaleSizeHeight.get() #height size
+		dirControl = update_sticky() #news
 
 		padup = fieldPadUp.get()
 		paddown = fieldPadDown.get()
@@ -379,7 +192,7 @@ def create():
 	ranNumber = createRandomNumber()
 
 	fieldNameApp = f"app_{ranNumber}.py" # create new name for app (e.g., `app_123456.py`)
-	file = f"""from tkinter import *\n\n#Header\nroot = Tk()\nroot.title("{titleName}")\n#root.geometry("320x200")\n#root.resizable(width=False,height=False)\n\n#Config\nID_CONTROL= 1\nROW_CONTROL= 0\nCOL_CONTROL= 0\n\n#Input\n\n#Script\n\n#Button\n\n#End\nroot.mainloop()"""
+	file = f"""from tkinter import *\n\n#Config\nID_CONTROL= 1\nROW_CONTROL= 0\nCOL_CONTROL= 0\n\n#Script\n\n#Header\nroot = Tk()\nroot.title("{titleName}")\n#root.geometry("320x200")\n#root.resizable(width=False,height=False)\n\n#Listbox\n\n#Input\n\n#Button\n\n#OtherButton\n\n#End\nroot.mainloop()"""
 	
 	writeFile(fieldNameApp, file) # create files and write into it
 	
@@ -417,7 +230,7 @@ def addLabel():
 	fieldName, idControl, rowControl, colControl, spinControl, sizeControl, dirControl, padControl = getInformation()
 
 	if(fieldName):
-		hashtag = "#Script\n"
+		hashtag = "#Button\n"
 		item = f"""title_{idControl} = Label(root, text="new item" , width={sizeControl[0]}, height={sizeControl[1]}) #ID_{idControl}\ntitle_{idControl}.grid(row={rowControl},column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n\n"""
 		lines = readFile(fieldName)
 		searchAndWriteFile(fieldName, hashtag, lines, item) # search hashtag in app_123456.py and add item before hashtag
@@ -436,8 +249,8 @@ def addField():
 	fieldName, idControl, rowControl, colControl, spinControl, sizeControl, dirControl, padControl = getInformation()
 
 	if(fieldName):
-		hashtag = "#Script\n"
-		item = f"""fieldName_{idControl} = Entry(root, borderwidth=2) #ID_{idControl}\nfieldName_{idControl}.grid(row={rowControl},column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), ipady={sizeControl[1]}, ipadx={sizeControl[0]}, sticky="{dirControl}") #ID_{idControl}\n#ID_{idControl}\n\n"""
+		hashtag = "#Button\n"
+		item = f"""fieldName_{idControl} = Entry(root, width={sizeControl[0]} , borderwidth=2) #ID_{idControl}\nfieldName_{idControl}.grid(row={rowControl},column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), ipady={sizeControl[1]}, sticky="{dirControl}") #ID_{idControl}\n#ID_{idControl}\n\n"""
 		lines = readFile(fieldName)
 		searchAndWriteFile(fieldName, hashtag, lines, item) # search hashtag in app_123456.py and add item before hashtag
 		changeSetting("id")
@@ -457,8 +270,8 @@ def addButton():
 	fieldName, idControl, rowControl, colControl, spinControl, sizeControl, dirControl, padControl = getInformation()
 
 	if(fieldName):
-		hashtag1 = "#Button\n"
-		hashtag2 = "#End\n"
+		hashtag1 = "#Header\n"
+		hashtag2 = "#OtherButton\n"
 		item1 = f"""def btn_{idControl}(): #ID_{idControl}\n\tpass #ID_{idControl}\n#ID_{idControl}\n\n"""
 		item2 = f"""Button_{idControl} = Button(root, text=f"Button{idControl}", command=btn_{idControl}) #ID_{idControl}\nButton_{idControl}.grid(row={rowControl}, column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), ipady={sizeControl[1]}, ipadx={sizeControl[0]}, sticky="{dirControl}") #ID_{idControl}\n\n"""
 		
@@ -466,6 +279,38 @@ def addButton():
 		# search hashtag in app_123456.py and add item before hashtag
 		searchAndWriteFile(fieldName, hashtag1, lines, item1)
 		searchAndWriteFile(fieldName, hashtag2, lines, item2)
+		changeSetting("id")
+		changeSetting("row")
+		changeSetting("col")
+		changeColCount()
+	else:
+		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+
+
+def addScale():
+	fieldName, idControl, rowControl, colControl, spinControl, sizeControl, dirControl, padControl = getInformation()
+
+	if(fieldName):
+		hashtag = "#Button\n"
+		item = f"""Scale_{idControl} = Scale(root, from_=0, to=100, orient=HORIZONTAL, length={sizeControl[0]}) #VERTICAL/HORIZONTAL  #ID_{idControl}\nScale_{idControl}.grid(row={rowControl},column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]},{padControl[1]}), padx=({padControl[2]},{padControl[3]}), ipady={sizeControl[1]}, sticky="{dirControl}")  #ID_{idControl}\n\n"""
+		lines = readFile(fieldName)
+		searchAndWriteFile(fieldName, hashtag, lines, item) # search hashtag in app_123456.py and add item before hashtag
+		changeSetting("id")
+		changeSetting("row")
+		changeSetting("col")
+		changeColCount()
+	else:
+		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+
+
+def addSpinbox():
+	fieldName, idControl, rowControl, colControl, spinControl, sizeControl, dirControl, padControl = getInformation()
+
+	if(fieldName):
+		hashtag = "#Button\n"
+		item = f"""Spin_{idControl} = Spinbox(root, from_=0, to=10, width={sizeControl[0]}) #ID_{idControl}\nSpin_{idControl}.grid(row={rowControl}, column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0],padControl[1]}), padx=({padControl[2],padControl[3]}), ipady={sizeControl[1]}, sticky="{dirControl}") #ID_{idControl}\n\n"""
+		lines = readFile(fieldName)
+		searchAndWriteFile(fieldName, hashtag, lines, item) # search hashtag in app_123456.py and add item before hashtag
 		changeSetting("id")
 		changeSetting("row")
 		changeSetting("col")
@@ -494,6 +339,195 @@ def removeItem():
 	else:
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 	
+#Header
+root = Tk()
+root.title("Tiny Tkinter GUI")
+#root.geometry("320x170")
+root.resizable(width=False,height=False)
+
+
+#Input
+titleName = Label(root, text="Title App:", width=10)
+titleName.grid(row=0,column=0, columnspan=1, padx=0,pady=0)
+titleNameField = Entry(root, width=40, borderwidth=2)
+titleNameField.grid(row=0,column=1, columnspan=1, padx=0,pady=0)
+titleNameField.insert(END, "New Application")
+
+fieldNameField = Entry(root, width=40, borderwidth=2)
+fieldNameField.grid(row=1,column=1, columnspan=1, padx=7,pady=2)
+
+
+#Spinbox
+RowCountName = Label(root, text="Row Count:").grid(row=5,column=0)
+RowCount = Spinbox(root, from_=0, to=25, width=38)
+RowCount.grid(row=5, column=1)
+ColCountName = Label(root, text="Column Count:").grid(row=6,column=0)
+ColCount = Spinbox(root, from_=0, to=25, width=38)
+ColCount.grid(row=6, column=1)
+SpinCountName = Label(root, text="Col. Span Count:").grid(row=7,column=0)
+SpinCount = Spinbox(root, from_=1, to=25, width=38)
+SpinCount.grid(row=7, column=1)
+rowSpinCountName = Label(root, text="Row Span Count:").grid(row=8,column=0)
+rowSpinCount = Spinbox(root, from_=1, to=25, width=38)
+rowSpinCount.grid(row=8, column=1)
+
+
+#Checkbox
+checkbox_row_control = 9
+
+def update_sticky():
+	sticky_value = ""
+	if top_var.get():    
+		sticky_value += "n"
+	if bottom_var.get():
+		sticky_value += "s"
+	if left_var.get():
+		sticky_value += "w"
+	if right_var.get():
+		sticky_value += "e"
+	return sticky_value
+
+stickyTitle = Label(root, text="Direction:", width=10)
+stickyTitle.grid(row=checkbox_row_control,column=0, columnspan=1, sticky="w")
+
+top_var = IntVar()
+bottom_var = IntVar()
+left_var = IntVar()
+right_var = IntVar()
+chk_top = Checkbutton(root, text="Top", variable=top_var, command=update_sticky)
+chk_bottom = Checkbutton(root, text="Bottom", variable=bottom_var, command=update_sticky)
+chk_left = Checkbutton(root, text="Left", variable=left_var, command=update_sticky)
+chk_right = Checkbutton(root, text="Right", variable=right_var, command=update_sticky)
+
+chk_top.grid(row=checkbox_row_control, column=0, padx=(0,30), sticky="e")
+chk_bottom.grid(row=checkbox_row_control, column=1, padx=(5,0), sticky="w")
+chk_left.grid(row=checkbox_row_control, column=1, padx=5)
+chk_right.grid(row=checkbox_row_control, column=1, padx=5, sticky="e")
+
+
+#Scale Width
+scale_width_row_control = 10
+
+fieldNameScale = Entry(root, width=7, borderwidth=2)
+fieldNameScale.grid(row=scale_width_row_control,column=2, columnspan=1, sticky="e", padx=10)
+
+def sync_from_scale(value):
+	fieldNameScale.delete(0, END)
+	fieldNameScale.insert(0, int(float(value)))
+
+def sync_from_entry(event):
+	try:
+		scaleSize.set(int(fieldNameScale.get()))
+	except ValueError:
+		pass
+
+fieldNameScale.bind("<KeyRelease>", sync_from_entry)
+
+scaleSizeName = Label(root, text="Width Control:").grid(row=scale_width_row_control,column=0, sticky="")
+scaleSize = Scale(root, length=350, from_=0, to=500, orient="horizontal", command=sync_from_scale)
+scaleSize.grid(row=scale_width_row_control,column=1, columnspan=2, pady=(0,0), sticky="w")
+
+defaultScale = 0
+scaleSize.set(defaultScale)
+fieldNameScale.insert(0, defaultScale)
+
+
+#Scale height
+scale_height_row_control = 11
+
+def sync_from_scale_height(value):
+	fieldNameScaleHeight.delete(0, END)
+	fieldNameScaleHeight.insert(0, int(float(value)))
+
+def sync_from_entry_height(event):
+	try:
+		scaleSizeHeight.set(int(fieldNameScaleHeight.get()))
+	except ValueError:
+		pass
+
+fieldNameScaleHeight = Entry(root, width=7, borderwidth=2)
+fieldNameScaleHeight.grid(row=scale_height_row_control,column=2, columnspan=1, sticky="e", padx=10)
+fieldNameScaleHeight.bind("<KeyRelease>", sync_from_entry_height)
+
+scaleSizeHeightName = Label(root, text="Height Control:").grid(row=scale_height_row_control,column=0, sticky="")
+scaleSizeHeight = Scale(root, length=350, from_=0, to=100, orient="horizontal", command=sync_from_scale_height)
+scaleSizeHeight.grid(row=scale_height_row_control,column=1, columnspan=2, pady=(0,15), sticky="w")
+
+defaultScaleHeight = 0
+scaleSizeHeight.set(defaultScaleHeight)
+fieldNameScaleHeight.insert(0, defaultScaleHeight)
+
+
+#padding input
+padding_row_control = 12
+
+paddingTitle = Label(root, text="Padding:", width=10)
+paddingTitle.grid(row=padding_row_control,column=0, columnspan=1, rowspan=2, padx=(0,5), sticky="w")
+
+padUpTitle = Label(root, text="Up", width=10)
+padUpTitle.grid(row=padding_row_control,column=0, columnspan=1, padx=(0,5), sticky="es")
+fieldPadUp = Entry(root, width=4, borderwidth=2)
+fieldPadUp.grid(row=padding_row_control,column=0, columnspan=1, sticky="es")
+
+padDownTitle = Label(root, text="Down", width=10)
+padDownTitle.grid(row=padding_row_control,column=1, columnspan=1, sticky="ws")
+fieldPadDown = Entry(root, width=4, borderwidth=2)
+fieldPadDown.grid(row=padding_row_control,column=1, columnspan=1, padx=(58,0), sticky="ws")
+
+padLeftTitle = Label(root, text="Left", width=10)
+padLeftTitle.grid(row=padding_row_control,column=1, columnspan=1)
+fieldPadLeft = Entry(root, width=4, borderwidth=2)
+fieldPadLeft.grid(row=padding_row_control,column=1, columnspan=1, padx=(65,0))
+
+padRightTitle = Label(root, text="Right", width=10)
+padRightTitle.grid(row=padding_row_control,column=1, columnspan=1, padx=(0,10), sticky="e")
+fieldPadRight = Entry(root, width=4, borderwidth=2)
+fieldPadRight.grid(row=padding_row_control,column=1, columnspan=1, sticky="e")
+
+fieldPadUp.insert(0, 0)
+fieldPadDown.insert(0, 0)
+fieldPadLeft.insert(0, 0)
+fieldPadRight.insert(0, 0)
+
+
+#padding input next row
+padding_row_control_next = padding_row_control + 1
+
+def update_padding(*args):
+	try:
+		value_up_down = int(var_up_down.get())
+		value_right_left = int(var_right_left.get())
+
+		if value_up_down > 0:
+			fieldPadUp.delete(0, END)
+			fieldPadDown.delete(0, END)
+			fieldPadUp.insert(0, value_up_down)
+			fieldPadDown.insert(0, value_up_down)
+
+		if value_right_left > 0:
+			fieldPadRight.delete(0, END)
+			fieldPadLeft.delete(0, END)
+			fieldPadRight.insert(0, value_right_left)
+			fieldPadLeft.insert(0, value_right_left)
+	except ValueError:
+		pass  
+
+var_up_down = StringVar(value="0")
+var_right_left = StringVar(value="0")
+
+var_up_down.trace_add("write", update_padding)
+var_right_left.trace_add("write", update_padding)
+
+padUpDownTitle = Label(root, text="Up/Down", width=10)
+padUpDownTitle.grid(row=padding_row_control_next,column=0, columnspan=1, padx=(0,0), sticky="e")
+fieldPadUpDown = Entry(root, width=10, borderwidth=2, textvariable=var_up_down)
+fieldPadUpDown.grid(row=padding_row_control_next,column=1, columnspan=1, sticky="w")
+
+padRightLeftTitle = Label(root, text="Left/Right", width=10)
+padRightLeftTitle.grid(row=padding_row_control_next,column=1, columnspan=1, padx=(50,0))
+fieldPadRightLeft = Entry(root, width=10, borderwidth=2, textvariable=var_right_left)
+fieldPadRightLeft.grid(row=padding_row_control_next,column=1, columnspan=1, sticky="e")
+
 
 #Button
 Button_1 = Button(root, text="Create", padx=40, command=create).grid(row=0, column=2)
@@ -507,8 +541,10 @@ Button_14 = Button(root, text="Reset", padx=43, command=resetPadding).grid(row=p
 Button_4 = Button(root, text="Label", padx=55, command=addLabel).grid(row=14, column=0, pady=(20,10), padx=(5,0))
 Button_3 = Button(root, text="Field", padx=55, command=addField).grid(row=14, column=1)
 Button_5 = Button(root, text="Button", padx=50, command=addButton).grid(row=14, column=2, padx=5)
-Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=15, column=0, padx=(5, 0))
-Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=15, column=2, pady=5, padx=5)
+Button_16 = Button(root, text="Scale", padx=55, command=addScale).grid(row=15, column=0, padx=(5,0))
+Button_16 = Button(root, text="Spinbox", padx=46, command=addSpinbox).grid(row=15, column=1)
+Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=16, column=0, padx=(5, 0))
+Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=16, column=2, pady=5, padx=5)
 
 #End
 root.mainloop()
