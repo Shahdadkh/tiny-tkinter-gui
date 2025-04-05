@@ -319,6 +319,55 @@ def addSpinbox():
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 
 
+def addListbox():
+	fieldName, idControl, rowControl, colControl, spinControl, sizeControl, dirControl, padControl = getInformation()
+
+	if(fieldName):
+		hashtag1 = "#Header\n"
+		hashtag2 = "#Input\n"
+		hashtag3 = "#OtherButton\n"
+		item1 = f"""def show_selected_{idControl}(): #ID_{idControl}\n\tselected_items = listbox_{idControl}.curselection() #ID_{idControl}\n\tselected_values = [listbox_{idControl}.get(i) for i in selected_items] #ID_{idControl}\n\t#feildName.config(text=f"Selected: {{', '.join(selected_values)}}") #ID_{idControl}\n#ID_{idControl}\n\n"""
+		item2 = f"""items_{idControl} = ["item1", "item2", "item3"] #ID_{idControl}\nlistbox_{idControl} = Listbox(root, selectmode=MULTIPLE, width={sizeControl[0]}, height={sizeControl[1]}) #SINGLE or MULTIPLE #ID_{idControl}\nlistbox_{idControl}.grid(row={rowControl}, column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]},{padControl[1]}), padx=({padControl[2]},{padControl[3]}), sticky="{dirControl}") #ID_{idControl}\nfor item in items_{idControl}: #ID_{idControl}\n\tlistbox_{idControl}.insert(END, item) #ID_{idControl}\n#ID_{idControl}\n\n"""
+		item3 = f"""# Button_{idControl} = Button(root, text="Button{idControl}", command=show_selected_{idControl}) #ID_{idControl}\n# Button_{idControl}.grid(row={rowControl}, column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]},{padControl[1]}), padx=({padControl[2]},{padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n\n"""
+
+		lines = readFile(fieldName)
+		# search hashtag in app_123456.py and add item before hashtag
+		searchAndWriteFile(fieldName, hashtag1, lines, item1)
+		searchAndWriteFile(fieldName, hashtag2, lines, item2)
+		searchAndWriteFile(fieldName, hashtag3, lines, item3)
+		changeSetting("id")
+		changeSetting("row")
+		changeSetting("col")
+		changeColCount()
+	else:
+		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+
+
+def addScrollbar():
+	fieldName, idControl, rowControl, colControl, spinControl, sizeControl, dirControl, padControl = getInformation()
+
+	if(fieldName):
+		hashtag1 = "#Header\n"
+		hashtag2 = "#Input\n"
+		hashtag3 = "#OtherButton\n"
+		item1 = f"""def show_selected_{idControl}(): #ID_{idControl}\n\tselected_items = listbox_{idControl}.curselection() #ID_{idControl}\n\tselected_values = [listbox_{idControl}.get(i) for i in selected_items] #ID_{idControl}\n\t#feildName.config(text=f"Selected: {{', '.join(selected_values)}}") #ID_{idControl}\n#ID_{idControl}\n\n"""
+		item2 = f"""items_{idControl} = ["item1", "item2", "item3"] #ID_{idControl}\nlistbox_{idControl} = Listbox(root, selectmode=MULTIPLE, width={sizeControl[0]}, height={sizeControl[1]}) #SINGLE or MULTIPLE #ID_{idControl}\nlistbox_{idControl}.grid(row={rowControl}, column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]},{padControl[1]}), padx=({padControl[2]},0), sticky="{dirControl}") #ID_{idControl}\nfor item in items_{idControl}: #ID_{idControl}\n\tlistbox_{idControl}.insert(END, item) #ID_{idControl}\n#ID_{idControl}\nscrollbar_{idControl} = Scrollbar(root, orient=VERTICAL, command=listbox_{idControl}.yview) #VERTICAL or HORIZONTAL #ID_{idControl}\nscrollbar_{idControl}.grid(row={rowControl}, column={str(int(colControl) + 1)}, sticky="ns", pady=({padControl[0]},{padControl[1]}), padx=(0,{padControl[3]})) #ID_{idControl}\nlistbox_{idControl}.config(yscrollcommand=scrollbar_{idControl}.set)#ID_{idControl}\n#ID_{idControl}\n\n"""
+		item3 = f"""# Button_{idControl} = Button(root, text="Button{idControl}", command=show_selected_{idControl}) #ID_{idControl}\n# Button_{idControl}.grid(row={rowControl}, column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]},{padControl[1]}), padx=({padControl[2]},{padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n\n"""
+
+		lines = readFile(fieldName)
+		# search hashtag in app_123456.py and add item before hashtag
+		searchAndWriteFile(fieldName, hashtag1, lines, item1)
+		searchAndWriteFile(fieldName, hashtag2, lines, item2)
+		searchAndWriteFile(fieldName, hashtag3, lines, item3)
+		changeSetting("id")
+		changeSetting("row")
+		changeSetting("col",2)
+		changeColCount(2)
+	else:
+		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+
+
+
 # Removes the last item (label, input field, or button) from the program:  
 #	Reads the value of `ID_CONTROL` and checks if it is greater than 1.  
 #	Reads all lines from the file and removes those containing `#ID_{IDControl-1}`.  
@@ -543,8 +592,10 @@ Button_3 = Button(root, text="Field", padx=55, command=addField).grid(row=14, co
 Button_5 = Button(root, text="Button", padx=50, command=addButton).grid(row=14, column=2, padx=5)
 Button_16 = Button(root, text="Scale", padx=55, command=addScale).grid(row=15, column=0, padx=(5,0))
 Button_16 = Button(root, text="Spinbox", padx=46, command=addSpinbox).grid(row=15, column=1)
-Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=16, column=0, padx=(5, 0))
-Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=16, column=2, pady=5, padx=5)
+Button_17 = Button(root, text="Listbox", padx=49, command=addListbox).grid(row=15, column=2)
+Button_18 = Button(root, text="Scrollbar", padx=46, command=addScrollbar).grid(row=16, column=0, pady=(10,10), padx=(5,0))
+Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=17, column=0, padx=(5, 0))
+Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=17, column=2, pady=5, padx=5)
 
 #End
 root.mainloop()
