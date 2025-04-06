@@ -367,6 +367,37 @@ def addScrollbar():
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 
 
+def addBrowse():
+	fieldName, idControl, rowControl, colControl, spinControl, sizeControl, dirControl, padControl = getInformation()
+
+	if(fieldName):
+		hashtag1 = "#Header\n"
+		hashtag2 = "#OtherButton\n"
+		hashtag3 = "#Config\n"
+		item1 = f"""def selectFile_{idControl}(): #ID_{idControl}\n\tfilePath = filedialog.askopenfilename() #ID_{idControl}\n\tif filePath: #ID_{idControl}\n\t\tfileName = path.basename(filePath) #ID_{idControl}\n\t\t# fieldNameField.delete(0, 'end') #ID_{idControl}\n\t\t# fieldNameField.insert(0, fileName) #ID_{idControl}\n#ID_{idControl}\n\n"""
+		item2 = f"""Button_{idControl} = Button(root, text="Browse", command=selectFile_{idControl}) #ID_{idControl}\nButton_{idControl}.grid(row={rowControl}, column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), ipady={sizeControl[1]}, ipadx={sizeControl[0]}, sticky="{dirControl}") #ID_{idControl}\n\n"""
+		item3 = f"""from tkinter import filedialog\n\n"""
+		item4 = f"""from os import path\n\n"""
+
+		lines = readFile(fieldName)
+		# search hashtag in app_123456.py and add item before hashtag
+		searchAndWriteFile(fieldName, hashtag1, lines, item1)
+		searchAndWriteFile(fieldName, hashtag2, lines, item2)
+
+		if "from tkinter import filedialog" not in ''.join(lines):
+			searchAndWriteFile(fieldName, hashtag3, lines, item3)
+			lines = readFile(fieldName)
+			
+		if "from os import path" not in ''.join(lines):
+			searchAndWriteFile(fieldName, hashtag3, lines, item4)
+
+		changeSetting("id")
+		changeSetting("row")
+		changeSetting("col")
+		changeColCount()
+	else:
+		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+
 
 # Removes the last item (label, input field, or button) from the program:  
 #	Reads the value of `ID_CONTROL` and checks if it is greater than 1.  
@@ -594,6 +625,7 @@ Button_16 = Button(root, text="Scale", padx=55, command=addScale).grid(row=15, c
 Button_16 = Button(root, text="Spinbox", padx=46, command=addSpinbox).grid(row=15, column=1)
 Button_17 = Button(root, text="Listbox", padx=49, command=addListbox).grid(row=15, column=2)
 Button_18 = Button(root, text="Scrollbar", padx=46, command=addScrollbar).grid(row=16, column=0, pady=(10,10), padx=(5,0))
+Button_19 = Button(root, text="Browse", padx=49, command=addBrowse).grid(row=16, column=1)
 Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=17, column=0, padx=(5, 0))
 Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=17, column=2, pady=5, padx=5)
 
