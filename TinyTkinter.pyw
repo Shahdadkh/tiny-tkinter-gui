@@ -436,7 +436,25 @@ def addMessage():
 
 
 def addCheckbutton():
-	pass
+	fieldName, idControl, rowControl, colControl, _, _, dirControl, padControl = getInformation()
+
+	if(fieldName):
+		hashtag1 = "#Header\n"
+		hashtag2 = "#End\n"
+		item1 = f"""def show_selected_{idControl}(): #ID_{idControl}\n\tselected_numbers = [] #ID_{idControl}\n\tfor var, val in zip(checkbox_vars_{idControl}, items_{idControl}): #ID_{idControl}\n\t\tif var.get(): #ID_{idControl}\n\t\t\tselected_numbers.append(str(val)) #ID_{idControl}\n\t#result_label.config(text=f"Selected: {{', '.join(selected_numbers)}}") #ID_{idControl}\n#ID_{idControl}\n\n"""
+		item2 = f"""items_{idControl} = ["Apple", "Banana", "Cherry", "Date"] #ID_{idControl}\ncheckbox_vars_{idControl} = [] #ID_{idControl}\nstart_row_{idControl} = {rowControl} # Define the starting row for the grid layout (e.g., start at row 0) #ID_{idControl}\nstart_col_{idControl} = {colControl} # Define the starting column for the grid layout (e.g., start at column 1) #ID_{idControl}\ncolumns_{idControl} = len(items_{idControl}) # Set this value to define how many columns to use (e.g., 3 for 3 columns) #ID_{idControl}\nfor idx, num in enumerate(items_{idControl}): #ID_{idControl}\n\tvar = BooleanVar() #ID_{idControl}\n\tcb = Checkbutton(root, text=str(num), variable=var, command=show_selected_{idControl}) #ID_{idControl}\n\trow = start_row_{idControl} + (idx // columns_{idControl}) #ID_{idControl}\n\tcol = start_col_{idControl} + (idx % columns_{idControl}) #ID_{idControl}\n\tcb.grid(row=row, column=col, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n\tcheckbox_vars_{idControl}.append(var) #ID_{idControl}\n#ID_{idControl}\n\n"""
+		
+		lines = readFile(fieldName)
+		# search hashtag in app_123456.py and add item before hashtag
+		searchAndWriteFile(fieldName, hashtag1, lines, item1)
+		searchAndWriteFile(fieldName, hashtag2, lines, item2)
+		changeSetting("id")
+		changeSetting("row")
+		changeSetting("col")
+		changeColCount()
+	else:
+		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+
 
 
 def addRadiobutton():
