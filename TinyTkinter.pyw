@@ -456,7 +456,6 @@ def addCheckbutton():
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 
 
-
 def addRadiobutton():
 	fieldName, idControl, rowControl, colControl, _, _, dirControl, padControl = getInformation()
 
@@ -478,9 +477,25 @@ def addRadiobutton():
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 
 
-
 def addPhotoimage():
-	pass
+	fieldName, idControl, rowControl, colControl, spinControl, _, dirControl, padControl = getInformation()
+
+	if(fieldName):
+		filePath = filedialog.askopenfilename(
+        	filetypes=[("Image files", "*.png *.gif")] 
+		)
+
+		if filePath:
+			hashtag = "#Button\n"
+			item = f"""photo_{idControl} = PhotoImage(file=f"{filePath}") #ID_{idControl}\nresized_photo_{idControl} = photo_{idControl}.subsample(1, 1) #ID_{idControl}\nlabel = Label(root, image=resized_photo_{idControl}) #ID_{idControl}\nlabel.grid(row={rowControl},column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n\n"""
+			lines = readFile(fieldName)
+			searchAndWriteFile(fieldName, hashtag, lines, item) # search hashtag in app_123456.py and add item before hashtag
+			changeSetting("id")
+			changeSetting("row")
+			changeSetting("col")
+			changeColCount()
+	else:
+		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 
 
 # Removes the last item (label, input field, or button) from the program:  
@@ -715,6 +730,7 @@ Button_21 = Button(root, text="Message", padx=46, command=addMessage).grid(row=1
 Button_22 = Button(root, text="CheckButton", padx=34, command=addCheckbutton).grid(row=17, column=1)
 Button_23 = Button(root, text="RadioButton", padx=34, command=addRadiobutton).grid(row=17, column=2)
 Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=18, column=0, padx=(5, 0))
+Button_24 = Button(root, text="PhotoImage", padx=37, command=addPhotoimage).grid(row=18, column=1)
 Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=18, column=2, pady=5, padx=5)
 
 #End
