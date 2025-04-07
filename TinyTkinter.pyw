@@ -399,6 +399,42 @@ def addBrowse():
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 
 
+def addText():
+	fieldName, idControl, rowControl, colControl, spinControl, sizeControl, dirControl, padControl = getInformation()
+
+	if(fieldName):
+		hashtag1 = "#Header\n"
+		hashtag2 = "#Button\n"
+		item1 = f"""def read_text_{idControl}(): #ID_{idControl}\n\tcontent = text_{idControl}.get("1.0", END) #ID_{idControl}\n\t# label.config(text=f"{{content}}") #ID_{idControl}\n#ID_{idControl}\n\n"""
+		item2 = f"""text_{idControl} = Text(root, width={sizeControl[0]}, height={sizeControl[1]}) #ID_{idControl}\ntext_{idControl}.grid(row={rowControl},column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n\n"""
+		lines = readFile(fieldName)
+		# search hashtag in app_123456.py and add item before hashtag
+		searchAndWriteFile(fieldName, hashtag1, lines, item1)
+		searchAndWriteFile(fieldName, hashtag2, lines, item2)
+		changeSetting("id")
+		changeSetting("row")
+		changeSetting("col")
+		changeColCount()
+	else:
+		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+
+
+def addCheckbutton():
+	pass
+
+
+def addRadiobutton():
+	pass
+
+
+def addMessage():
+	pass
+
+
+def addPhotoimage():
+	pass
+
+
 # Removes the last item (label, input field, or button) from the program:  
 #	Reads the value of `ID_CONTROL` and checks if it is greater than 1.  
 #	Reads all lines from the file and removes those containing `#ID_{IDControl-1}`.  
@@ -626,6 +662,7 @@ Button_16 = Button(root, text="Spinbox", padx=46, command=addSpinbox).grid(row=1
 Button_17 = Button(root, text="Listbox", padx=49, command=addListbox).grid(row=15, column=2)
 Button_18 = Button(root, text="Scrollbar", padx=46, command=addScrollbar).grid(row=16, column=0, pady=(10,10), padx=(5,0))
 Button_19 = Button(root, text="Browse", padx=49, command=addBrowse).grid(row=16, column=1)
+Button_20 = Button(root, text="Text", padx=56, command=addText).grid(row=16, column=2)
 Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=17, column=0, padx=(5, 0))
 Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=17, column=2, pady=5, padx=5)
 
