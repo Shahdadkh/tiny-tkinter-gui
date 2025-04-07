@@ -419,15 +419,27 @@ def addText():
 		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
 
 
+def addMessage():
+	fieldName, idControl, rowControl, colControl, spinControl, sizeControl, dirControl, padControl = getInformation()
+
+	if(fieldName):
+		hashtag = "#Button\n"
+		item = f"""long_text_{idControl} = "Lorem ipsum dolor sit amet, consectetur adipiscing elit." #ID_{idControl}\nmessage_{idControl} = Message(root, text=long_text_{idControl}, width={sizeControl[0]}) #ID_{idControl}\nmessage_{idControl}.grid(row={rowControl},column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n\n"""
+		lines = readFile(fieldName)
+		searchAndWriteFile(fieldName, hashtag, lines, item) # search hashtag in app_123456.py and add item before hashtag
+		changeSetting("id")
+		changeSetting("row")
+		changeSetting("col")
+		changeColCount()
+	else:
+		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+
+
 def addCheckbutton():
 	pass
 
 
 def addRadiobutton():
-	pass
-
-
-def addMessage():
 	pass
 
 
@@ -663,8 +675,11 @@ Button_17 = Button(root, text="Listbox", padx=49, command=addListbox).grid(row=1
 Button_18 = Button(root, text="Scrollbar", padx=46, command=addScrollbar).grid(row=16, column=0, pady=(10,10), padx=(5,0))
 Button_19 = Button(root, text="Browse", padx=49, command=addBrowse).grid(row=16, column=1)
 Button_20 = Button(root, text="Text", padx=56, command=addText).grid(row=16, column=2)
-Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=17, column=0, padx=(5, 0))
-Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=17, column=2, pady=5, padx=5)
+Button_21 = Button(root, text="Message", padx=46, command=addMessage).grid(row=17, column=0, pady=(0,5), padx=(5,0))
+Button_22 = Button(root, text="CheckButton", padx=34, command=addCheckbutton).grid(row=17, column=1)
+Button_23 = Button(root, text="RadioButton", padx=34, command=addRadiobutton).grid(row=17, column=2)
+Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=18, column=0, padx=(5, 0))
+Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=18, column=2, pady=5, padx=5)
 
 #End
 root.mainloop()
