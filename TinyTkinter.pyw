@@ -4,6 +4,10 @@ from os import path, system
 from random import randint
 from re import search, MULTILINE, sub
 
+#Config
+scaleSizeWidthNumber = 500
+scaleSizeHeightNumber = 100
+notFoundFileToRunWarning = "Please choose a file or create a new file."
 
 #Script
 def readFile(fieldName):
@@ -77,7 +81,9 @@ def getInformation():
 
 
 def selectFile():
-	filePath = filedialog.askopenfilename()
+	filePath = filedialog.askopenfilename(
+		filetypes=[("Python files", "*.py")]
+	)
 	if filePath:
 		fileName = path.basename(filePath)
 		fieldNameField.delete(0, 'end')
@@ -101,7 +107,7 @@ def cleanAndDeployApp():
 		cleanLines = [sub(r'\s*#ID_\d+', '', line) for line in lines]
 		writeFile(f"out_{fieldName}", cleanLines)
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
     
 
 def resetSpinCount():
@@ -165,6 +171,12 @@ def nextRowCount():
 	SpinCount.insert(0, 1)
 
 
+def ConvertSizeForPhoto(topScaleSize, size):
+	divideTopScaleSize = topScaleSize / 5
+	calculateSize = ((topScaleSize + divideTopScaleSize) - size) / divideTopScaleSize
+	return int(calculateSize)
+
+
 # This function increases or decreases the value of `ID_CONTROL` in file by one unit.
 def changeSetting(op, row=1):
 	fieldName, idControl, rowControl, colControl, _, _, _, _ = getInformation()
@@ -220,7 +232,7 @@ def run():
 				f.write(file)
 		system(f"start cmd /c python {executeName} {fieldName}") # start cmd /c python Run.py app_123456.py
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
 
 # Adds a new Label to the program:
@@ -239,7 +251,7 @@ def addLabel():
 		changeSetting("col")
 		changeColCount()
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
 
 # Adds a new input field (Entry) to the program:
@@ -258,7 +270,7 @@ def addField():
 		changeSetting("col")
 		changeColCount()
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
 
 # Adds a new button to the program:
@@ -284,7 +296,7 @@ def addButton():
 		changeSetting("col")
 		changeColCount()
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
 
 def addScale():
@@ -300,7 +312,7 @@ def addScale():
 		changeSetting("col")
 		changeColCount()
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
 
 def addSpinbox():
@@ -316,7 +328,7 @@ def addSpinbox():
 		changeSetting("col")
 		changeColCount()
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
 
 def addListbox():
@@ -340,7 +352,7 @@ def addListbox():
 		changeSetting("col")
 		changeColCount()
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
 
 def addScrollbar():
@@ -364,7 +376,7 @@ def addScrollbar():
 		changeSetting("col",2)
 		changeColCount(2)
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
 
 def addBrowse():
@@ -396,7 +408,7 @@ def addBrowse():
 		changeSetting("col")
 		changeColCount()
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
 
 def addText():
@@ -416,7 +428,7 @@ def addText():
 		changeSetting("col")
 		changeColCount()
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
 
 def addMessage():
@@ -432,7 +444,7 @@ def addMessage():
 		changeSetting("col")
 		changeColCount()
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
 
 def addCheckbutton():
@@ -453,7 +465,7 @@ def addCheckbutton():
 		changeSetting("col")
 		changeColCount()
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
 
 def addRadiobutton():
@@ -474,11 +486,11 @@ def addRadiobutton():
 		changeSetting("col")
 		changeColCount()
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
 
 def addPhotoimage():
-	fieldName, idControl, rowControl, colControl, spinControl, _, dirControl, padControl = getInformation()
+	fieldName, idControl, rowControl, colControl, spinControl, sizeControl, dirControl, padControl = getInformation()
 
 	if(fieldName):
 		filePath = filedialog.askopenfilename(
@@ -487,7 +499,7 @@ def addPhotoimage():
 
 		if filePath:
 			hashtag = "#Button\n"
-			item = f"""photo_{idControl} = PhotoImage(file=f"{filePath}") #ID_{idControl}\nresized_photo_{idControl} = photo_{idControl}.subsample(1, 1) #ID_{idControl}\nlabel = Label(root, image=resized_photo_{idControl}) #ID_{idControl}\nlabel.grid(row={rowControl},column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n\n"""
+			item = f"""photo_{idControl} = PhotoImage(file=f"{filePath}") #ID_{idControl}\nresized_photo_{idControl} = photo_{idControl}.subsample({ConvertSizeForPhoto(scaleSizeWidthNumber,sizeControl[0])}, {ConvertSizeForPhoto(scaleSizeHeightNumber,sizeControl[1])}) #ID_{idControl}\nlabel = Label(root, image=resized_photo_{idControl}) #ID_{idControl}\nlabel.grid(row={rowControl},column={colControl}, columnspan={spinControl[0]}, rowspan={spinControl[1]}, pady=({padControl[0]}, {padControl[1]}), padx=({padControl[2]}, {padControl[3]}), sticky="{dirControl}") #ID_{idControl}\n\n"""
 			lines = readFile(fieldName)
 			searchAndWriteFile(fieldName, hashtag, lines, item) # search hashtag in app_123456.py and add item before hashtag
 			changeSetting("id")
@@ -495,7 +507,7 @@ def addPhotoimage():
 			changeSetting("col")
 			changeColCount()
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
 
 # Removes the last item (label, input field, or button) from the program:  
@@ -516,8 +528,64 @@ def removeItem():
 			changeSetting("col", -1)
 			changeColCount(-1)
 	else:
-		messagebox.showwarning("Warning", "Please enter the file name or create a new file.")
+		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 	
+
+def update_padding(*args):
+	try:
+		value_up_down = int(var_up_down.get())
+		value_right_left = int(var_right_left.get())
+
+		if value_up_down > 0:
+			fieldPadUp.delete(0, END)
+			fieldPadDown.delete(0, END)
+			fieldPadUp.insert(0, value_up_down)
+			fieldPadDown.insert(0, value_up_down)
+
+		if value_right_left > 0:
+			fieldPadRight.delete(0, END)
+			fieldPadLeft.delete(0, END)
+			fieldPadRight.insert(0, value_right_left)
+			fieldPadLeft.insert(0, value_right_left)
+	except ValueError:
+		pass  
+
+
+def update_sticky():
+	sticky_value = ""
+	if top_var.get():    
+		sticky_value += "n"
+	if bottom_var.get():
+		sticky_value += "s"
+	if left_var.get():
+		sticky_value += "w"
+	if right_var.get():
+		sticky_value += "e"
+	return sticky_value
+
+
+def sync_from_scale(value):
+	fieldNameScale.delete(0, END)
+	fieldNameScale.insert(0, int(float(value)))
+
+def sync_from_entry(event):
+	try:
+		scaleSize.set(int(fieldNameScale.get()))
+	except ValueError:
+		pass
+
+
+def sync_from_scale_height(value):
+	fieldNameScaleHeight.delete(0, END)
+	fieldNameScaleHeight.insert(0, int(float(value)))
+
+def sync_from_entry_height(event):
+	try:
+		scaleSizeHeight.set(int(fieldNameScaleHeight.get()))
+	except ValueError:
+		pass
+
+
 #Header
 root = Tk()
 root.title("Tiny Tkinter GUI")
@@ -553,22 +621,6 @@ rowSpinCount.grid(row=8, column=1)
 
 #Checkbox
 checkbox_row_control = 9
-
-def update_sticky():
-	sticky_value = ""
-	if top_var.get():    
-		sticky_value += "n"
-	if bottom_var.get():
-		sticky_value += "s"
-	if left_var.get():
-		sticky_value += "w"
-	if right_var.get():
-		sticky_value += "e"
-	return sticky_value
-
-stickyTitle = Label(root, text="Direction:", width=10)
-stickyTitle.grid(row=checkbox_row_control,column=0, columnspan=1, sticky="w")
-
 top_var = IntVar()
 bottom_var = IntVar()
 left_var = IntVar()
@@ -578,6 +630,8 @@ chk_bottom = Checkbutton(root, text="Bottom", variable=bottom_var, command=updat
 chk_left = Checkbutton(root, text="Left", variable=left_var, command=update_sticky)
 chk_right = Checkbutton(root, text="Right", variable=right_var, command=update_sticky)
 
+stickyTitle = Label(root, text="Direction:", width=10)
+stickyTitle.grid(row=checkbox_row_control,column=0, columnspan=1, sticky="w")
 chk_top.grid(row=checkbox_row_control, column=0, padx=(0,30), sticky="e")
 chk_bottom.grid(row=checkbox_row_control, column=1, padx=(5,0), sticky="w")
 chk_left.grid(row=checkbox_row_control, column=1, padx=5)
@@ -586,24 +640,12 @@ chk_right.grid(row=checkbox_row_control, column=1, padx=5, sticky="e")
 
 #Scale Width
 scale_width_row_control = 10
-
 fieldNameScale = Entry(root, width=7, borderwidth=2)
 fieldNameScale.grid(row=scale_width_row_control,column=2, columnspan=1, sticky="e", padx=10)
-
-def sync_from_scale(value):
-	fieldNameScale.delete(0, END)
-	fieldNameScale.insert(0, int(float(value)))
-
-def sync_from_entry(event):
-	try:
-		scaleSize.set(int(fieldNameScale.get()))
-	except ValueError:
-		pass
-
 fieldNameScale.bind("<KeyRelease>", sync_from_entry)
 
 scaleSizeName = Label(root, text="Width Control:").grid(row=scale_width_row_control,column=0, sticky="")
-scaleSize = Scale(root, length=350, from_=0, to=500, orient="horizontal", command=sync_from_scale)
+scaleSize = Scale(root, length=350, from_=0, to=scaleSizeWidthNumber, orient="horizontal", command=sync_from_scale)
 scaleSize.grid(row=scale_width_row_control,column=1, columnspan=2, pady=(0,0), sticky="w")
 
 defaultScale = 0
@@ -613,23 +655,12 @@ fieldNameScale.insert(0, defaultScale)
 
 #Scale height
 scale_height_row_control = 11
-
-def sync_from_scale_height(value):
-	fieldNameScaleHeight.delete(0, END)
-	fieldNameScaleHeight.insert(0, int(float(value)))
-
-def sync_from_entry_height(event):
-	try:
-		scaleSizeHeight.set(int(fieldNameScaleHeight.get()))
-	except ValueError:
-		pass
-
 fieldNameScaleHeight = Entry(root, width=7, borderwidth=2)
 fieldNameScaleHeight.grid(row=scale_height_row_control,column=2, columnspan=1, sticky="e", padx=10)
 fieldNameScaleHeight.bind("<KeyRelease>", sync_from_entry_height)
 
 scaleSizeHeightName = Label(root, text="Height Control:").grid(row=scale_height_row_control,column=0, sticky="")
-scaleSizeHeight = Scale(root, length=350, from_=0, to=100, orient="horizontal", command=sync_from_scale_height)
+scaleSizeHeight = Scale(root, length=350, from_=0, to=scaleSizeHeightNumber, orient="horizontal", command=sync_from_scale_height)
 scaleSizeHeight.grid(row=scale_height_row_control,column=1, columnspan=2, pady=(0,15), sticky="w")
 
 defaultScaleHeight = 0
@@ -639,7 +670,6 @@ fieldNameScaleHeight.insert(0, defaultScaleHeight)
 
 #padding input
 padding_row_control = 12
-
 paddingTitle = Label(root, text="Padding:", width=10)
 paddingTitle.grid(row=padding_row_control,column=0, columnspan=1, rowspan=2, padx=(0,5), sticky="w")
 
@@ -671,26 +701,6 @@ fieldPadRight.insert(0, 0)
 
 #padding input next row
 padding_row_control_next = padding_row_control + 1
-
-def update_padding(*args):
-	try:
-		value_up_down = int(var_up_down.get())
-		value_right_left = int(var_right_left.get())
-
-		if value_up_down > 0:
-			fieldPadUp.delete(0, END)
-			fieldPadDown.delete(0, END)
-			fieldPadUp.insert(0, value_up_down)
-			fieldPadDown.insert(0, value_up_down)
-
-		if value_right_left > 0:
-			fieldPadRight.delete(0, END)
-			fieldPadLeft.delete(0, END)
-			fieldPadRight.insert(0, value_right_left)
-			fieldPadLeft.insert(0, value_right_left)
-	except ValueError:
-		pass  
-
 var_up_down = StringVar(value="0")
 var_right_left = StringVar(value="0")
 
