@@ -147,14 +147,6 @@ def resetPadding():
 	fieldPadRightLeft.insert(0, 0)
 
 
-def changeColCount(i=1):
-	 # Get the current value from ColCount and update it by i
-	value = int(ColCount.get())
-	value = max(0, value + i) # Ensure the value does not go below 0
-	ColCount.delete(0, 'end')
-	ColCount.insert(0, str(value))
-
-
 def nextRowCount():
 	# Increment the RowCount value by 1
 	value = int(RowCount.get())
@@ -190,6 +182,8 @@ def changeSetting(op, row=1):
 		searchAndChangeConfig(fieldName, "ROW_CONTROL=", lines, f"ROW_CONTROL= {rowControl}\n")  # search hashtag in app_123456.py and change config
 	elif(op == "col"):
 		colControl = str(max(0, int(colControl) + row))
+		ColCount.delete(0, 'end')
+		ColCount.insert(0, colControl)
 		lines = readFile(fieldName) # Read app_123456.py
 		searchAndChangeConfig(fieldName, "COL_CONTROL=", lines, f"COL_CONTROL= {colControl}\n")  # search hashtag in app_123456.py and change config
 
@@ -249,7 +243,6 @@ def addLabel():
 		changeSetting("id")
 		changeSetting("row")
 		changeSetting("col")
-		changeColCount()
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
@@ -268,7 +261,7 @@ def addField():
 		changeSetting("id")
 		changeSetting("row")
 		changeSetting("col")
-		changeColCount()
+		#changeColCount()
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
@@ -294,7 +287,6 @@ def addButton():
 		changeSetting("id")
 		changeSetting("row")
 		changeSetting("col")
-		changeColCount()
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
@@ -310,7 +302,6 @@ def addScale():
 		changeSetting("id")
 		changeSetting("row")
 		changeSetting("col")
-		changeColCount()
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
@@ -326,7 +317,6 @@ def addSpinbox():
 		changeSetting("id")
 		changeSetting("row")
 		changeSetting("col")
-		changeColCount()
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
@@ -350,7 +340,6 @@ def addListbox():
 		changeSetting("id")
 		changeSetting("row")
 		changeSetting("col")
-		changeColCount()
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
@@ -374,7 +363,6 @@ def addScrollbar():
 		changeSetting("id")
 		changeSetting("row")
 		changeSetting("col",2)
-		changeColCount(2)
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
@@ -406,7 +394,6 @@ def addBrowse():
 		changeSetting("id")
 		changeSetting("row")
 		changeSetting("col")
-		changeColCount()
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
@@ -426,7 +413,6 @@ def addText():
 		changeSetting("id")
 		changeSetting("row")
 		changeSetting("col")
-		changeColCount()
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
@@ -442,7 +428,6 @@ def addMessage():
 		changeSetting("id")
 		changeSetting("row")
 		changeSetting("col")
-		changeColCount()
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
@@ -463,7 +448,6 @@ def addCheckbutton():
 		changeSetting("id")
 		changeSetting("row")
 		changeSetting("col")
-		changeColCount()
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
@@ -484,7 +468,6 @@ def addRadiobutton():
 		changeSetting("id")
 		changeSetting("row")
 		changeSetting("col")
-		changeColCount()
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
@@ -505,7 +488,6 @@ def addPhotoimage():
 			changeSetting("id")
 			changeSetting("row")
 			changeSetting("col")
-			changeColCount()
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
@@ -526,7 +508,6 @@ def removeItem():
 			writeFile(fieldName, newLines)
 			changeSetting("id", -1)
 			changeSetting("col", -1)
-			changeColCount(-1)
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 	
