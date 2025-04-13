@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import messagebox, filedialog
 from os import path, system
 from random import randint
-from re import search, MULTILINE, sub
+from re import search, MULTILINE, sub, compile
 
 #Config
 scaleSizeWidthNumber = 500
@@ -169,6 +169,24 @@ def ConvertSizeForPhoto(topScaleSize, size):
 	return int(calculateSize)
 
 
+def CalculateHighColumnInRow(row):
+	fieldName, _, _, _, _, _, _, _ = getInformation()
+	lines = readFile(fieldName)
+
+	target_row = row
+	max_column = 0
+	pattern = compile(r'grid\s*\(\s*row\s*=\s*' + str(target_row) + r'\s*,\s*column\s*=\s*(\d+)')
+
+	for line in lines:
+		match = pattern.search(line)
+		if match:
+			col = int(match.group(1))
+			if col > max_column:
+				max_column = col
+
+	return max_column
+
+
 # This function increases or decreases the value of `ID_CONTROL` in file by one unit.
 def changeSetting(op, row=1):
 	fieldName, idControl, rowControl, colControl, _, _, _, _ = getInformation()
@@ -181,12 +199,25 @@ def changeSetting(op, row=1):
 		lines = readFile(fieldName) # Read app_123456.py
 		searchAndChangeConfig(fieldName, "ROW_CONTROL=", lines, f"ROW_CONTROL= {rowControl}\n")  # search hashtag in app_123456.py and change config
 	elif(op == "col"):
-		colControl = str(max(0, int(colControl) + row))
-		ColCount.delete(0, 'end')
-		ColCount.insert(0, colControl)
-		lines = readFile(fieldName) # Read app_123456.py
-		searchAndChangeConfig(fieldName, "COL_CONTROL=", lines, f"COL_CONTROL= {colControl}\n")  # search hashtag in app_123456.py and change config
+		if row == -1 and int(colControl) == 0 and int(rowControl) > 0:
+			newRow = int(rowControl) - 1
+			highCol = CalculateHighColumnInRow(newRow)
+			highCol += 1
+			RowCount.delete(0, 'end')
+			RowCount.insert(0, newRow)
+			ColCount.delete(0, 'end')
+			ColCount.insert(0, highCol)
+			lines = readFile(fieldName) # Read app_123456.py
+			searchAndChangeConfig(fieldName, "ROW_CONTROL=", lines, f"ROW_CONTROL= {str(newRow)}\n")  # search hashtag in app_123456.py and change config
+			searchAndChangeConfig(fieldName, "COL_CONTROL=", lines, f"COL_CONTROL= {str(highCol)}\n")
+		else:
+			colControl = str(max(0, int(colControl) + row))
+			ColCount.delete(0, 'end')
+			ColCount.insert(0, colControl)
+			lines = readFile(fieldName) # Read app_123456.py
+			searchAndChangeConfig(fieldName, "COL_CONTROL=", lines, f"COL_CONTROL= {colControl}\n")  # search hashtag in app_123456.py and change config
 
+		
 
 def createRandomNumber():
 	return randint(100, 999) # Generates a random 3-digit number
@@ -261,7 +292,6 @@ def addField():
 		changeSetting("id")
 		changeSetting("row")
 		changeSetting("col")
-		#changeColCount()
 	else:
 		messagebox.showwarning("Warning", notFoundFileToRunWarning)
 
