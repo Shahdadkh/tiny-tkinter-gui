@@ -11,6 +11,10 @@ scaleSizeHeightNumber = 100		# Set the default height for the scaled size
 # Warning message to display when no file is selected or created
 notFoundFileToRunWarning = "Please choose a file or create a new file."
 
+# Application version (used for display and version tracking)
+appVersion = "v2.6.1"
+
+
 #Script
 def readFile(fieldName):
 	# This function opens a text file specified by 'fieldName' and returns all its lines as a list of strings.
@@ -914,7 +918,7 @@ def sync_from_entry_height(event):
 
 #Header
 root = Tk()
-root.title("Tiny Tkinter GUI")
+root.title(f"Tiny Tkinter GUI {appVersion}")
 #root.geometry("320x170")
 root.resizable(width=False,height=False)
 
@@ -1065,7 +1069,7 @@ Button_20 = Button(root, text="Text", padx=56, command=addText).grid(row=16, col
 Button_21 = Button(root, text="Message", padx=46, command=addMessage).grid(row=17, column=0, pady=(0,5), padx=(5,0))
 Button_22 = Button(root, text="CheckButton", padx=34, command=addCheckbutton).grid(row=17, column=1)
 Button_23 = Button(root, text="RadioButton", padx=34, command=addRadiobutton).grid(row=17, column=2)
-Button_11 = Button(root, text="Clean & Deploy", padx=27, command=cleanAndDeployApp).grid(row=18, column=0, padx=(5, 0))
+Button_11 = Button(root, text="Clean & Deploy", bg="#7cdd7e", padx=27, command=cleanAndDeployApp).grid(row=18, column=0, padx=(5, 0))
 Button_24 = Button(root, text="PhotoImage", padx=37, command=addPhotoimage).grid(row=18, column=1)
 Button_7 = Button(root, text="Delete Last Item", bg="#ff9191", padx=27, command=removeItem).grid(row=18, column=2, pady=5, padx=5)
 
