@@ -38,8 +38,6 @@
 
 ## 📷 Screenshots
 
-> _(You can replace these with your actual screenshots)_
-
 ![Main Window](screenshots/main_window.png)
 ![Generated Code](screenshots/generated_code.png)
 
